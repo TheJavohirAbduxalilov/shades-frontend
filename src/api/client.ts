@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import i18n from '../i18n';
 import { API_URL } from '../config';
 import useAuthStore from '../stores/authStore';
@@ -10,10 +10,14 @@ const client = axios.create({
 client.interceptors.request.use((config) => {
   const { token } = useAuthStore.getState();
   if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: 'Bearer ' + token,
-    };
+    if (!config.headers) {
+      config.headers = new AxiosHeaders();
+    }
+    if (config.headers instanceof AxiosHeaders) {
+      config.headers.set('Authorization', 'Bearer ' + token);
+    } else {
+      (config.headers as Record<string, string>).Authorization = 'Bearer ' + token;
+    }
   }
 
   const params = config.params || {};
