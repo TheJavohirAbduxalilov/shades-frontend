@@ -6,6 +6,10 @@ export interface OrdersQuery {
   search?: string;
 }
 
+interface OrdersResponse {
+  orders: Order[];
+}
+
 export const getOrders = async (query: OrdersQuery) => {
   const params: Record<string, string> = {};
   if (query.status && query.status.length) {
@@ -15,8 +19,8 @@ export const getOrders = async (query: OrdersQuery) => {
     params.search = query.search;
   }
 
-  const { data } = await client.get<Order[]>('/api/orders', { params });
-  return data;
+  const { data } = await client.get<OrdersResponse>('/api/orders', { params });
+  return data.orders || [];
 };
 
 export const getOrder = async (orderId: string) => {
