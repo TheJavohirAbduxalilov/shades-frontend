@@ -1,0 +1,106 @@
+{
+  "common": {
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "confirm": "Tasdiqlash",
+    "yes": "Ha",
+    "no": "Yo'q",
+    "continue": "Davom etish",
+    "startOver": "Qayta boshlash",
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik",
+    "success": "Muvaffaqiyatli"
+  },
+  "auth": {
+    "login": "Kirish",
+    "username": "Foydalanuvchi nomi",
+    "password": "Parol",
+    "loginButton": "Kirish",
+    "loginError": "Foydalanuvchi nomi yoki parol noto'g'ri"
+  },
+  "orders": {
+    "title": "Buyurtmalar",
+    "search": "Ism yoki manzil bo'yicha qidirish",
+    "filters": "Filtrlar",
+    "allStatuses": "Barcha holatlar",
+    "noOrders": "Buyurtmalar yo'q",
+    "visitDate": "Tashrif sanasi"
+  },
+  "order": {
+    "clientInfo": "Mijoz ma'lumotlari",
+    "phone": "Telefon",
+    "address": "Manzil",
+    "notes": "Izohlar",
+    "windows": "Oynalar",
+    "addWindow": "Oyna qo'shish",
+    "summary": "Jami",
+    "noWindows": "Oynalar yo'q"
+  },
+  "window": {
+    "name": "Oyna nomi",
+    "namePlaceholder": "Masalan: Yotoqxonadagi oyna",
+    "dimensions": "O'lchamlar",
+    "width": "Kenglik (sm)",
+    "height": "Balandlik (sm)",
+    "price": "Narx"
+  },
+  "wizard": {
+    "step": "{{total}} dan {{current}}-qadam",
+    "windowName": "Oyna nomi",
+    "shadeType": "Jaluzi turi",
+    "installation": "O'rnatish joyi",
+    "mounting": "O'rnatish usuli",
+    "controlSide": "Boshqarish tomoni",
+    "slideType": "Surish turi",
+    "dimensions": "O'lchamlar",
+    "material": "Material",
+    "color": "Rang",
+    "services": "Qo'shimcha xizmatlar",
+    "confirmation": "Tasdiqlash",
+    "copyPrevious": "Oldingi oyna sozlamalarini ishlatasizmi?",
+    "totalPrice": "Narxi",
+    "resumeTitle": "Qoralamani davom ettirasizmi?",
+    "resumeMessage": "Ushbu oyna uchun saqlangan qoralama topildi.",
+    "selectMaterialFirst": "Avval materialni tanlang."
+  },
+  "services": {
+    "installation": "O'rnatish",
+    "removal": "Demontaj"
+  },
+  "summary": {
+    "title": "Jami",
+    "backToWindows": "Oynalarga qaytish",
+    "total": "Umumiy summa",
+    "confirmOrder": "Buyurtmani tasdiqlash",
+    "orderConfirmed": "Buyurtma tasdiqlandi"
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Til",
+    "logout": "Chiqish",
+    "logoutConfirm": "Haqiqatan ham chiqmoqchimisiz?",
+    "languageRu": "Ruscha",
+    "languageUzCyrl": "O'zbekcha (Kiril)",
+    "languageUzLatn": "O'zbekcha (Lotin)"
+  },
+  "delete": {
+    "windowTitle": "Oynani o'chirasizmi?",
+    "windowMessage": "Bu amalni bekor qilib bo'lmaydi."
+  },
+  "status": {
+    "new": "Yangi",
+    "in_progress": "Jarayonda",
+    "measured": "O'lchov olindi",
+    "completed": "Tugallandi"
+  },
+  "errors": {
+    "network": "Tarmoq xatosi",
+    "unknown": "Nimadir xato ketdi",
+    "required": "Majburiy maydon",
+    "invalidNumber": "To'g'ri qiymat kiriting"
+  }
+}
