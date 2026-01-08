@@ -199,12 +199,17 @@ const WindowWizardPage = () => {
     setShowResumeModal(false);
   };
 
-  const handleStartOver = () => {
+  const handleStartNew = () => {
     clearDraft();
     wizard.reset();
     wizard.setStep(1);
     setAutoSaveEnabled(true);
     setShowResumeModal(false);
+  };
+
+  const handleCloseResumeModal = () => {
+    setShowResumeModal(false);
+    setAutoSaveEnabled(true);
   };
 
   const handleCopyPrevious = () => {
@@ -336,15 +341,10 @@ const WindowWizardPage = () => {
       setAutoSaveEnabled(false);
       clearDraft();
       wizard.reset();
-      toast.success(t('common.success'));
-
-      if (targetWindowId) {
-        navigate('/orders/' + orderId + '/windows/' + targetWindowId);
-      } else {
-        navigate('/orders/' + orderId);
-      }
+      toast.success(t('common.saved'));
+      navigate('/orders/' + orderId);
     } catch {
-      toast.error(t('errors.network'));
+      toast.error(t('errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -420,10 +420,10 @@ const WindowWizardPage = () => {
       <Modal
         isOpen={showResumeModal}
         title={t('wizard.resumeTitle')}
-        onClose={handleStartOver}
+        onClose={handleCloseResumeModal}
         actions={
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button variant="ghost" onClick={handleStartOver}>
+            <Button variant="secondary" onClick={handleStartNew}>
               {t('common.startOver')}
             </Button>
             <Button onClick={handleResumeDraft}>{t('common.continue')}</Button>

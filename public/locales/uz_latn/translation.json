@@ -13,7 +13,8 @@
     "startOver": "Qayta boshlash",
     "loading": "Yuklanmoqda...",
     "error": "Xatolik",
-    "success": "Muvaffaqiyatli"
+    "success": "Muvaffaqiyatli",
+    "saved": "Saqlandi"
   },
   "auth": {
     "login": "Kirish",
@@ -64,7 +65,7 @@
     "copyPrevious": "Oldingi oyna sozlamalarini ishlatasizmi?",
     "totalPrice": "Narxi",
     "resumeTitle": "Qoralamani davom ettirasizmi?",
-    "resumeMessage": "Ushbu oyna uchun saqlangan qoralama topildi.",
+    "resumeMessage": "Ushbu oyna uchun tugallanmagan qoralama bor.",
     "selectMaterialFirst": "Avval materialni tanlang."
   },
   "services": {
@@ -112,6 +113,7 @@
     "network": "Tarmoq xatosi",
     "unknown": "Nimadir xato ketdi",
     "required": "Majburiy maydon",
-    "invalidNumber": "To'g'ri qiymat kiriting"
+    "invalidNumber": "To'g'ri qiymat kiriting",
+    "saveFailed": "Saqlashda xatolik"
   }
 }
