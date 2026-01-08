@@ -21,6 +21,7 @@ import { useOrder } from '../hooks/useOrders';
 import { useDraft } from '../hooks/useDraft';
 import { useCreateShade, useUpdateShade } from '../hooks/useShades';
 import { useCreateWindow, useUpdateWindow } from '../hooks/useWindows';
+import useDraftStore from '../stores/draftStore';
 import useWizardStore from '../stores/wizardStore';
 import { Catalog, Shade, Window } from '../types';
 
@@ -79,14 +80,15 @@ const WindowWizardPage = () => {
   const { data: catalog, isLoading: catalogLoading, isError: catalogError } = useCatalog();
 
   const wizard = useWizardStore();
+  const loadDraft = useDraftStore((state) => state.loadDraft);
   const draftKey = orderId + '-' + (windowId || 'new');
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(isEditing);
-  const { draft, clearDraft } = useDraft(draftKey, wizard.data, wizard.currentStep, autoSaveEnabled);
-  const [showResumeModal, setShowResumeModal] = useState(false);
+  const { clearDraft } = useDraft(draftKey, wizard.data, wizard.currentStep, autoSaveEnabled);
+  const [showDraftModal, setShowDraftModal] = useState(false);
   const [showCopyModal, setShowCopyModal] = useState(false);
+  const [draftChecked, setDraftChecked] = useState(false);
   const [errors, setErrors] = useState<WizardErrors>({});
   const [isSaving, setIsSaving] = useState(false);
-  const copyOfferShown = useRef(false);
   const initialized = useRef(false);
   const initializedNew = useRef(false);
 
@@ -107,6 +109,20 @@ const WindowWizardPage = () => {
     }
     return order.windows.find((item) => String(item.id) === String(windowId)) || null;
   }, [order, windowId]);
+
+  const previousShade = useMemo(() => {
+    if (!order) {
+      return null;
+    }
+    return (
+      order.windows
+        .map((item) => item.shade)
+        .filter(Boolean)
+        .slice(-1)[0] || null
+    );
+  }, [order]);
+
+  const hasPreviousWindow = Boolean(previousShade);
 
   const isVertical = useMemo(() => {
     if (!catalog || !wizard.data.shadeTypeId) {
@@ -160,49 +176,37 @@ const WindowWizardPage = () => {
   }, [catalog, isEditing, order, windowItem, wizard]);
 
   useEffect(() => {
-    if (isEditing || autoSaveEnabled) {
+    if (isEditing || draftChecked || !orderId || !order) {
       return;
     }
 
-    if (draft) {
-      setShowResumeModal(true);
-      return;
+    const existingDraft = loadDraft(draftKey);
+    if (existingDraft && existingDraft.windowName?.trim()) {
+      setShowDraftModal(true);
+    } else {
+      setAutoSaveEnabled(true);
+      if (hasPreviousWindow) {
+        setShowCopyModal(true);
+      }
     }
 
-    setAutoSaveEnabled(true);
-  }, [autoSaveEnabled, draft, isEditing]);
-
-  useEffect(() => {
-    if (isEditing || !order || copyOfferShown.current || !autoSaveEnabled) {
-      return;
-    }
-
-    if (wizard.data.shadeTypeId || wizard.data.materialVariantId) {
-      return;
-    }
-
-    const previousShade = order.windows
-      .map((item) => item.shade)
-      .filter(Boolean)
-      .slice(-1)[0] as Shade | undefined;
-
-    if (previousShade) {
-      setShowCopyModal(true);
-      copyOfferShown.current = true;
-    }
-  }, [autoSaveEnabled, isEditing, order, wizard.data.materialVariantId, wizard.data.shadeTypeId]);
+    setDraftChecked(true);
+  }, [draftChecked, hasPreviousWindow, isEditing, loadDraft, order, orderId, draftKey]);
 
   useEffect(() => {
     setErrors({});
   }, [wizard.currentStep]);
 
-  const handleResumeDraft = () => {
-    if (draft) {
-      const safeStep = Math.min(Math.max(1, draft.currentStep), TOTAL_STEPS);
-      wizard.loadFromDraft({ ...draft, currentStep: safeStep });
+  const handleContinueDraft = () => {
+    const existingDraft = loadDraft(draftKey);
+    if (existingDraft) {
+      const safeStep = Math.min(Math.max(1, existingDraft.currentStep), TOTAL_STEPS);
+      wizard.loadFromDraft({ ...existingDraft, currentStep: safeStep });
     }
     setAutoSaveEnabled(true);
-    setShowResumeModal(false);
+    setDraftChecked(true);
+    setShowDraftModal(false);
+    setShowCopyModal(false);
   };
 
   const handleStartNew = () => {
@@ -210,23 +214,24 @@ const WindowWizardPage = () => {
     wizard.reset();
     wizard.setStep(1);
     setAutoSaveEnabled(true);
-    setShowResumeModal(false);
+    setDraftChecked(true);
+    setShowDraftModal(false);
+    if (hasPreviousWindow) {
+      setShowCopyModal(true);
+    }
   };
 
-  const handleCloseResumeModal = () => {
-    setShowResumeModal(false);
+  const handleCloseDraftModal = () => {
+    setDraftChecked(true);
+    setShowDraftModal(false);
     setAutoSaveEnabled(true);
+    setShowCopyModal(false);
   };
 
   const handleCopyPrevious = () => {
     if (!order) {
       return;
     }
-    const previousShade = order.windows
-      .map((item) => item.shade)
-      .filter(Boolean)
-      .slice(-1)[0] as Shade | undefined;
-
     if (!previousShade) {
       setShowCopyModal(false);
       return;
@@ -424,15 +429,15 @@ const WindowWizardPage = () => {
       </WizardLayout>
 
       <Modal
-        isOpen={showResumeModal}
+        isOpen={showDraftModal}
         title={t('wizard.resumeTitle')}
-        onClose={handleCloseResumeModal}
+        onClose={handleCloseDraftModal}
         actions={
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
             <Button variant="secondary" onClick={handleStartNew}>
               {t('common.startOver')}
             </Button>
-            <Button onClick={handleResumeDraft}>{t('common.continue')}</Button>
+            <Button onClick={handleContinueDraft}>{t('common.continue')}</Button>
           </div>
         }
       >
