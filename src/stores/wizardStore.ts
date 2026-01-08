@@ -19,8 +19,12 @@ export interface WizardState {
   prevStep: () => void;
   updateData: (data: Partial<WizardState['data']>) => void;
   reset: () => void;
-  loadFromDraft: (draft: WizardState['data']) => void;
+  loadFromDraft: (draft: DraftData) => void;
   copyFromPrevious: (previousShade: Shade) => void;
+}
+
+export interface DraftData extends WizardState['data'] {
+  currentStep: number;
 }
 
 const initialData: WizardState['data'] = {
@@ -43,7 +47,13 @@ const useWizardStore = create<WizardState>((set, get) => ({
   prevStep: () => set({ currentStep: Math.max(1, get().currentStep - 1) }),
   updateData: (data) => set({ data: { ...get().data, ...data } }),
   reset: () => set({ currentStep: 1, data: initialData }),
-  loadFromDraft: (draft) => set({ data: { ...initialData, ...draft } }),
+  loadFromDraft: (draft) => {
+    const { currentStep, ...rest } = draft;
+    set({
+      currentStep: Math.max(1, currentStep || 1),
+      data: { ...initialData, ...rest },
+    });
+  },
   copyFromPrevious: (previousShade) => {
     set({
       data: {

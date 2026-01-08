@@ -81,7 +81,7 @@ const WindowWizardPage = () => {
   const wizard = useWizardStore();
   const draftKey = orderId + '-' + (windowId || 'new');
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(isEditing);
-  const { draft, clearDraft } = useDraft(draftKey, wizard.data, autoSaveEnabled);
+  const { draft, clearDraft } = useDraft(draftKey, wizard.data, wizard.currentStep, autoSaveEnabled);
   const [showResumeModal, setShowResumeModal] = useState(false);
   const [showCopyModal, setShowCopyModal] = useState(false);
   const [errors, setErrors] = useState<WizardErrors>({});
@@ -192,7 +192,8 @@ const WindowWizardPage = () => {
 
   const handleResumeDraft = () => {
     if (draft) {
-      wizard.loadFromDraft(draft);
+      const safeStep = Math.min(Math.max(1, draft.currentStep), TOTAL_STEPS);
+      wizard.loadFromDraft({ ...draft, currentStep: safeStep });
     }
     setAutoSaveEnabled(true);
     setShowResumeModal(false);
