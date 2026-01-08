@@ -3,10 +3,11 @@ import { Window } from '../../types';
 import WindowCard from './WindowCard';
 
 interface WindowListProps {
+  orderId: string;
   windows: Window[];
 }
 
-const WindowList = ({ windows }: WindowListProps) => {
+const WindowList = ({ orderId, windows }: WindowListProps) => {
   const { t } = useTranslation();
 
   if (!windows.length) {
@@ -16,7 +17,7 @@ const WindowList = ({ windows }: WindowListProps) => {
   return (
     <div className="space-y-3">
       {windows.map((windowItem) => (
-        <WindowCard key={windowItem.id} window={windowItem} />
+        <WindowCard key={windowItem.id} orderId={orderId} window={windowItem} />
       ))}
     </div>
   );

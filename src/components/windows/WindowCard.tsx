@@ -5,15 +5,16 @@ import { formatPrice } from '../../utils/formatPrice';
 import Card from '../ui/Card';
 
 interface WindowCardProps {
+  orderId: string;
   window: Window;
 }
 
-const WindowCard = ({ window }: WindowCardProps) => {
+const WindowCard = ({ orderId, window }: WindowCardProps) => {
   const { t } = useTranslation();
   const shade = window.shade;
 
   return (
-    <Link to={'/orders/' + window.orderId + '/windows/' + window.id} className="block">
+    <Link to={'/orders/' + orderId + '/windows/' + window.id} className="block">
       <Card>
         <div className="flex items-start justify-between gap-4">
           <div>

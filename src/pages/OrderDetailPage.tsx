@@ -40,7 +40,7 @@ const OrderDetailPage = () => {
           {t('order.addWindow')}
         </Button>
       </div>
-      <WindowList windows={windows} />
+      <WindowList orderId={orderId} windows={windows} />
       <Button variant="secondary" onClick={() => navigate('/orders/' + orderId + '/summary')}>
         {t('order.summary')}
       </Button>
