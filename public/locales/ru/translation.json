@@ -69,12 +69,23 @@
   },
   "services": {
     "installation": "Монтаж",
-    "removal": "Демонтаж"
+    "removal": "Демонтаж",
+    "installationWithPrice": "Монтаж (+{{value}} {{currency}})",
+    "removalWithPrice": "Демонтаж (+{{value}} {{currency}})"
+  },
+  "price": {
+    "currency": "сум",
+    "calculating": "Расчёт...",
+    "area": "Площадь: {{value}} м",
+    "total": "Стоимость: {{value}} {{currency}}",
+    "notCalculated": "Цена не рассчитана",
+    "minPriceApplied": "Применена минимальная цена"
   },
   "summary": {
     "title": "Итого",
     "backToWindows": "Назад к окнам",
     "total": "Общая сумма",
+    "totalLabel": "Итого",
     "confirmOrder": "Подтвердить заказ",
     "orderConfirmed": "Заказ подтверждён"
   },

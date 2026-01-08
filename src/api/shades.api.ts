@@ -11,6 +11,23 @@ export interface ShadePayload {
   removalIncluded: boolean;
 }
 
+export interface PriceBreakdown {
+  areaCalculation: string;
+  basePriceCalculation: string;
+  minPriceApplied: boolean;
+}
+
+export interface PriceCalculation {
+  area: number;
+  basePrice: number;
+  minPrice: number;
+  priceBeforeServices: number;
+  installationPrice: number;
+  removalPrice: number;
+  totalPrice: number;
+  breakdown?: PriceBreakdown;
+}
+
 export const createShade = async (windowId: string, payload: ShadePayload) => {
   const { data } = await client.post<Shade>('/api/windows/' + windowId + '/shades', payload);
   return data;
@@ -27,6 +44,6 @@ export const deleteShade = async (shadeId: string) => {
 };
 
 export const calculatePrice = async (payload: ShadePayload) => {
-  const { data } = await client.post<{ price: number }>('/api/price/calculate', payload);
+  const { data } = await client.post<PriceCalculation>('/api/price/calculate', payload);
   return data;
 };

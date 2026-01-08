@@ -10,6 +10,7 @@ interface WindowDetailsProps {
 const WindowDetails = ({ window }: WindowDetailsProps) => {
   const { t } = useTranslation();
   const shade = window.shade;
+  const price = shade ? shade.calculatedPrice ?? shade.totalPrice : null;
 
   if (!shade) {
     return <p className="text-sm text-slate-500">{t('order.noWindows')}</p>;
@@ -25,7 +26,7 @@ const WindowDetails = ({ window }: WindowDetailsProps) => {
           <span className="font-medium text-slate-700">{t('wizard.shadeType')}:</span> {shade.shadeTypeName}
         </p>
         <p>
-          <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {shade.width} ?
+          <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {shade.width} x
           {shade.height}
         </p>
         <div>
@@ -48,8 +49,11 @@ const WindowDetails = ({ window }: WindowDetailsProps) => {
           {shade.installationIncluded ? <span>{t('services.installation')}</span> : null}
           {shade.removalIncluded ? <span>{t('services.removal')}</span> : null}
         </div>
+        {typeof shade.area === 'number' ? <p>{t('price.area', { value: shade.area.toFixed(2) })}</p> : null}
         <p className="text-base font-semibold text-slate-900">
-          {t('window.price')}: {formatPrice(shade.calculatedPrice)}
+          {typeof price === 'number'
+            ? t('price.total', { value: formatPrice(price), currency: t('price.currency') })
+            : t('price.notCalculated')}
         </p>
       </div>
     </Card>

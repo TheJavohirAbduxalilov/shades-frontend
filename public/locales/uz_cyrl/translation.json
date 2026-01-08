@@ -69,12 +69,23 @@
   },
   "services": {
     "installation": "Ўрнатиш",
-    "removal": "Демонтаж"
+    "removal": "Демонтаж",
+    "installationWithPrice": "Ўрнатиш (+{{value}} {{currency}})",
+    "removalWithPrice": "Демонтаж (+{{value}} {{currency}})"
+  },
+  "price": {
+    "currency": "сўм",
+    "calculating": "Ҳисобланмоқда...",
+    "area": "Майдон: {{value}} м",
+    "total": "Қиймат: {{value}} {{currency}}",
+    "notCalculated": "Нарх ҳисобланмаган",
+    "minPriceApplied": "Минимал нарх қўлланди"
   },
   "summary": {
     "title": "Жами",
     "backToWindows": "Ойналарга қайтиш",
     "total": "Умумий сумма",
+    "totalLabel": "Жами",
     "confirmOrder": "Буюртмани тасдиқлаш",
     "orderConfirmed": "Буюртма тасдиқланди"
   },

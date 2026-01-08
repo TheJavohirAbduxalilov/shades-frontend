@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Catalog } from '../../../types';
 import useWizardStore from '../../../stores/wizardStore';
 import { formatPrice } from '../../../utils/formatPrice';
-import { useCalculatePrice } from '../../../hooks/useShades';
+import { calculatePrice } from '../../../api/shades.api';
 import Card from '../../ui/Card';
 import Spinner from '../../ui/Spinner';
 
@@ -37,7 +38,23 @@ const StepConfirmation = ({ catalog }: StepConfirmationProps) => {
   );
 
   const priceEnabled = Boolean(data.shadeTypeId && data.width && data.height && data.materialVariantId);
-  const priceQuery = useCalculatePrice(payload, priceEnabled);
+  const {
+    data: priceData,
+    isLoading: priceLoading,
+    isError: priceError,
+  } = useQuery({
+    queryKey: [
+      'price',
+      data.shadeTypeId,
+      data.width,
+      data.height,
+      data.materialVariantId,
+      data.installationIncluded,
+      data.removalIncluded,
+    ],
+    queryFn: () => calculatePrice(payload),
+    enabled: priceEnabled,
+  });
 
   const shadeType = catalog?.shadeTypes.find((item) => item.id === data.shadeTypeId);
   const material = catalog?.materials.find((item) => item.id === data.materialId);
@@ -68,7 +85,7 @@ const StepConfirmation = ({ catalog }: StepConfirmationProps) => {
           ) : null}
           {data.width && data.height ? (
             <p>
-              <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {data.width} ?
+              <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {data.width} x
               {data.height}
             </p>
           ) : null}
@@ -99,19 +116,29 @@ const StepConfirmation = ({ catalog }: StepConfirmationProps) => {
         </div>
       </Card>
       <Card>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-600">{t('wizard.totalPrice')}</span>
-          {priceQuery.isLoading ? (
-            <div className="flex items-center gap-2 text-sm text-slate-500">
-              <Spinner size="sm" />
-              {t('common.loading')}
-            </div>
-          ) : (
-            <span className="text-lg font-semibold text-slate-900">
-              {priceQuery.data ? formatPrice(priceQuery.data.price) : '-'}
-            </span>
-          )}
-        </div>
+        {priceError ? (
+          <p className="text-sm text-error">{t('errors.network')}</p>
+        ) : priceLoading ? (
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <Spinner size="sm" />
+            {t('price.calculating')}
+          </div>
+        ) : priceData ? (
+          <div className="space-y-2 text-sm text-slate-600">
+            <p>{t('price.area', { value: priceData.area.toFixed(2) })}</p>
+            <p className="text-base font-semibold text-slate-900">
+              {t('price.total', {
+                value: formatPrice(priceData.totalPrice),
+                currency: t('price.currency'),
+              })}
+            </p>
+            {priceData.breakdown?.minPriceApplied ? (
+              <p className="text-xs text-slate-500">{t('price.minPriceApplied')}</p>
+            ) : null}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">{t('price.notCalculated')}</p>
+        )}
       </Card>
     </div>
   );

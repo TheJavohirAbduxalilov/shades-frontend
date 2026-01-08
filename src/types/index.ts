@@ -38,7 +38,9 @@ export interface Shade {
   options: ShadeOptionValue[];
   installationIncluded: boolean;
   removalIncluded: boolean;
-  calculatedPrice: number;
+  area?: number;
+  calculatedPrice?: number;
+  totalPrice?: number;
 }
 
 export interface ShadeOptionValue {

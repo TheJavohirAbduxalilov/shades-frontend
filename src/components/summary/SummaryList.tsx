@@ -14,6 +14,7 @@ const SummaryList = ({ windows }: SummaryListProps) => {
     <div className="space-y-3">
       {windows.map((windowItem) => {
         const shade = windowItem.shade;
+        const price = shade ? shade.calculatedPrice ?? shade.totalPrice : null;
         return (
           <Card key={windowItem.id}>
             <div className="space-y-2 text-sm text-slate-600">
@@ -22,16 +23,16 @@ const SummaryList = ({ windows }: SummaryListProps) => {
                   <p className="text-base font-semibold text-slate-900">{windowItem.name}</p>
                   {shade ? <p className="text-sm text-slate-500">{shade.shadeTypeName}</p> : null}
                 </div>
-                {shade ? (
-                  <span className="text-sm font-semibold text-slate-900">
-                    {formatPrice(shade.calculatedPrice)}
-                  </span>
-                ) : null}
+                <span className="text-sm font-semibold text-slate-900">
+                  {shade && typeof price === 'number'
+                    ? formatPrice(price) + ' ' + t('price.currency')
+                    : t('price.notCalculated')}
+                </span>
               </div>
               {shade ? (
                 <div className="space-y-1">
                   <p>
-                    {t('window.dimensions')}: {shade.width} ? {shade.height}
+                    {t('window.dimensions')}: {shade.width} x {shade.height}
                   </p>
                   <p>
                     {t('wizard.material')}: {shade.materialName}

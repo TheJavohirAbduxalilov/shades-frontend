@@ -12,6 +12,7 @@ interface WindowCardProps {
 const WindowCard = ({ orderId, window }: WindowCardProps) => {
   const { t } = useTranslation();
   const shade = window.shade;
+  const price = shade ? shade.calculatedPrice ?? shade.totalPrice : null;
 
   return (
     <Link to={'/orders/' + orderId + '/windows/' + window.id} className="block">
@@ -23,7 +24,7 @@ const WindowCard = ({ orderId, window }: WindowCardProps) => {
               <div className="mt-1 space-y-1 text-sm text-slate-500">
                 <p>{shade.shadeTypeName}</p>
                 <p>
-                  {shade.width} ? {shade.height}
+                  {shade.width} x {shade.height}
                 </p>
               </div>
             ) : (
@@ -31,7 +32,13 @@ const WindowCard = ({ orderId, window }: WindowCardProps) => {
             )}
           </div>
           {shade ? (
-            <span className="text-sm font-semibold text-slate-900">{formatPrice(shade.calculatedPrice)}</span>
+            typeof price === 'number' ? (
+              <span className="text-sm font-semibold text-slate-900">
+                {formatPrice(price)} {t('price.currency')}
+              </span>
+            ) : (
+              <span className="text-xs text-slate-500">{t('price.notCalculated')}</span>
+            )
           ) : null}
         </div>
       </Card>

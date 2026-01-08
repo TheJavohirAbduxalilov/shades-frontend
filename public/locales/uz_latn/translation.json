@@ -69,12 +69,23 @@
   },
   "services": {
     "installation": "O'rnatish",
-    "removal": "Demontaj"
+    "removal": "Demontaj",
+    "installationWithPrice": "O'rnatish (+{{value}} {{currency}})",
+    "removalWithPrice": "Demontaj (+{{value}} {{currency}})"
+  },
+  "price": {
+    "currency": "so'm",
+    "calculating": "Hisoblanmoqda...",
+    "area": "Maydon: {{value}} m",
+    "total": "Qiymat: {{value}} {{currency}}",
+    "notCalculated": "Narx hisoblanmagan",
+    "minPriceApplied": "Minimal narx qo'llandi"
   },
   "summary": {
     "title": "Jami",
     "backToWindows": "Oynalarga qaytish",
     "total": "Umumiy summa",
+    "totalLabel": "Jami",
     "confirmOrder": "Buyurtmani tasdiqlash",
     "orderConfirmed": "Buyurtma tasdiqlandi"
   },

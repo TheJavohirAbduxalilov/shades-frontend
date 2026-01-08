@@ -18,7 +18,10 @@ const StepServices = ({ catalog }: StepServicesProps) => {
       <Checkbox
         label={
           catalog?.servicePrices.installation
-            ? t('services.installation') + ' ? ' + formatPrice(catalog.servicePrices.installation.price)
+            ? t('services.installationWithPrice', {
+                value: formatPrice(catalog.servicePrices.installation.price),
+                currency: t('price.currency'),
+              })
             : t('services.installation')
         }
         checked={data.installationIncluded}
@@ -27,7 +30,10 @@ const StepServices = ({ catalog }: StepServicesProps) => {
       <Checkbox
         label={
           catalog?.servicePrices.removal
-            ? t('services.removal') + ' ? ' + formatPrice(catalog.servicePrices.removal.price)
+            ? t('services.removalWithPrice', {
+                value: formatPrice(catalog.servicePrices.removal.price),
+                currency: t('price.currency'),
+              })
             : t('services.removal')
         }
         checked={data.removalIncluded}
