@@ -31,6 +31,9 @@ const useDraftStore = create<DraftState>()(
         set((state) => {
           const next = { ...state.drafts };
           delete next[key];
+          if (import.meta.env.DEV) {
+            console.log('Draft deleted, remaining drafts:', next);
+          }
           return { drafts: next };
         }),
     }),

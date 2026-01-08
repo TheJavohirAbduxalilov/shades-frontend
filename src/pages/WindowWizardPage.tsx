@@ -90,6 +90,12 @@ const WindowWizardPage = () => {
   const initialized = useRef(false);
   const initializedNew = useRef(false);
 
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log('Checking draft with key:', draftKey);
+    }
+  }, [draftKey]);
+
   const createWindow = useCreateWindow();
   const updateWindow = useUpdateWindow();
   const createShade = useCreateShade();

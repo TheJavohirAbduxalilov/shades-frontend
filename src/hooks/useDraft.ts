@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import useDraftStore from '../stores/draftStore';
 import { DraftData, WizardState } from '../stores/wizardStore';
 
@@ -23,6 +23,16 @@ export const useDraft = (
   const draft = useDraftStore((state) => normalizeDraft(state.drafts[key] ?? null));
   const serialized = JSON.stringify(data);
   const hasWindowName = Boolean(data.windowName && data.windowName.trim());
+  const latestRef = useRef({ key, data, currentStep, hasWindowName });
+  const activeRef = useRef(enabled);
+
+  useEffect(() => {
+    latestRef.current = { key, data, currentStep, hasWindowName };
+  }, [key, data, currentStep, hasWindowName]);
+
+  useEffect(() => {
+    activeRef.current = enabled;
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled) {
@@ -36,18 +46,22 @@ export const useDraft = (
 
   useEffect(() => {
     return () => {
-      if (!enabled) {
+      const latest = latestRef.current;
+      if (!activeRef.current || !latest.hasWindowName) {
         return;
       }
-      if (!hasWindowName) {
-        return;
-      }
-      saveDraft(key, { ...data, currentStep });
+      saveDraft(latest.key, { ...latest.data, currentStep: latest.currentStep });
     };
-  }, [key, serialized, currentStep, enabled, hasWindowName, saveDraft, data]);
+  }, [saveDraft]);
 
   return {
     draft,
-    clearDraft: () => deleteDraft(key),
+    clearDraft: () => {
+      activeRef.current = false;
+      if (import.meta.env.DEV) {
+        console.log('Deleting draft with key:', key);
+      }
+      deleteDraft(key);
+    },
   };
 };
