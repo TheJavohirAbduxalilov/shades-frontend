@@ -39,8 +39,10 @@ const StepColor = ({ catalog, error }: StepColorProps) => {
               type="button"
               onClick={() => updateData({ materialVariantId: variant.id })}
               className={[
-                'flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm font-medium transition',
-                isActive ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-slate-200',
+                'flex w-full items-center justify-between rounded-xl border-2 px-4 py-3 text-left text-sm font-medium transition-all duration-150 active:scale-[0.98]',
+                isActive
+                  ? 'border-primary-600 bg-primary-50 text-primary-700'
+                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 active:bg-slate-100',
               ]
                 .filter(Boolean)
                 .join(' ')}

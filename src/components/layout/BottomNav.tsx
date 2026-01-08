@@ -17,8 +17,8 @@ const BottomNav = () => {
 
   const linkClasses = (isActive: boolean) =>
     [
-      'flex flex-col items-center gap-1 text-xs font-medium transition',
-      isActive ? 'text-primary-600' : 'text-slate-500',
+      'flex flex-col items-center gap-1 text-xs font-medium transition-all duration-150 active:scale-[0.95]',
+      isActive ? 'text-primary-600' : 'text-slate-500 hover:text-slate-700 active:text-slate-800',
     ]
       .filter(Boolean)
       .join(' ');

@@ -7,8 +7,8 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 const Select = ({ label, error, className, children, ...props }: SelectProps) => {
   const selectClasses = [
-    'w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white',
-    error ? 'border-error' : 'border-slate-300',
+    'w-full rounded-lg border bg-white px-4 py-3 text-sm outline-none transition-all duration-150 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 active:ring-2 active:ring-primary-500',
+    error ? 'border-error' : 'border-slate-300 hover:border-slate-400',
     className || '',
   ]
     .filter(Boolean)

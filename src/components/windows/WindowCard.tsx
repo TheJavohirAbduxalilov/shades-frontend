@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Window } from '../../types';
 import { formatPrice } from '../../utils/formatPrice';
@@ -16,9 +17,9 @@ const WindowCard = ({ orderId, window }: WindowCardProps) => {
 
   return (
     <Link to={'/orders/' + orderId + '/windows/' + window.id} className="block">
-      <Card>
-        <div className="flex items-start justify-between gap-4">
-          <div>
+      <Card className="cursor-pointer transition-all duration-150 hover:bg-slate-50 active:scale-[0.98] active:bg-slate-100">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1">
             <h3 className="text-base font-semibold text-slate-900">{window.name}</h3>
             {shade ? (
               <div className="mt-1 space-y-1 text-sm text-slate-500">
@@ -31,15 +32,18 @@ const WindowCard = ({ orderId, window }: WindowCardProps) => {
               <p className="mt-1 text-sm text-slate-500">{t('common.loading')}</p>
             )}
           </div>
-          {shade ? (
-            typeof price === 'number' ? (
-              <span className="text-sm font-semibold text-slate-900">
-                {formatPrice(price)} {t('price.currency')}
-              </span>
-            ) : (
-              <span className="text-xs text-slate-500">{t('price.notCalculated')}</span>
-            )
-          ) : null}
+          <div className="flex items-center gap-2 text-right">
+            {shade ? (
+              typeof price === 'number' ? (
+                <span className="text-sm font-semibold text-slate-900">
+                  {formatPrice(price)} {t('price.currency')}
+                </span>
+              ) : (
+                <span className="text-xs text-slate-500">{t('price.notCalculated')}</span>
+              )
+            ) : null}
+            <ChevronRightIcon className="h-5 w-5 text-slate-400" />
+          </div>
         </div>
       </Card>
     </Link>
