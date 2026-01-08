@@ -41,7 +41,7 @@ const initialData: DraftData = {
   currentStep: 1,
 };
 
-const useWizardStore = create<WizardState>((set, get) => ({
+const useWizardStore = create<WizardState>((set) => ({
   currentStep: 1,
   data: initialData,
   setStep: (step) =>
