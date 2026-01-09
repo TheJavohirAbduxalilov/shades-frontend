@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import i18n from '../i18n';
 
 interface User {
   id: number;
@@ -17,6 +18,7 @@ interface AuthState {
   login: (user: User, token: string) => void;
   logout: () => void;
   setUser: (user: User) => void;
+  setLanguage: (lang: string) => void;
 }
 
 const getStoredUser = (): User | null => {
@@ -31,7 +33,7 @@ const getStoredUser = (): User | null => {
 const storedUser = getStoredUser();
 const storedToken = localStorage.getItem('token');
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: storedUser,
   token: storedToken,
   isAuthenticated: !!storedToken,
@@ -69,5 +71,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAdmin: user.role === 'admin',
       isInstaller: user.role === 'installer',
     });
+  },
+  setLanguage: (lang) => {
+    const currentUser = get().user;
+    if (currentUser) {
+      const nextUser = { ...currentUser, preferredLanguageCode: lang };
+      localStorage.setItem('user', JSON.stringify(nextUser));
+      set({
+        user: nextUser,
+        isAdmin: nextUser.role === 'admin',
+        isInstaller: nextUser.role === 'installer',
+      });
+    }
+    i18n.changeLanguage(lang);
   },
 }));

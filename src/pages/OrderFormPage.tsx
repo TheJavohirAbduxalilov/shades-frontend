@@ -12,7 +12,7 @@ import LoadingScreen from '../components/ui/LoadingScreen';
 import Modal from '../components/ui/Modal';
 import PageTransition from '../components/ui/PageTransition';
 import Select from '../components/ui/Select';
-import useAuthStore from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 
 const OrderFormPage = () => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ const OrderFormPage = () => {
   const params = useParams();
   const orderId = params.orderId;
   const isEditMode = Boolean(orderId);
-  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const { isAdmin } = useAuthStore();
 
   const [formData, setFormData] = useState({
     clientName: '',

@@ -12,7 +12,7 @@ import Modal from '../components/ui/Modal';
 import PageTransition from '../components/ui/PageTransition';
 import { CardSkeleton, WindowCardSkeleton } from '../components/ui/Skeleton';
 import { useOrder } from '../hooks/useOrders';
-import useAuthStore from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 
 const OrderDetailPage = () => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ const OrderDetailPage = () => {
   const params = useParams();
   const orderId = params.orderId || '';
   const { data: order, isLoading, isError, refetch } = useOrder(orderId);
-  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const { isAdmin } = useAuthStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [copied, setCopied] = useState(false);

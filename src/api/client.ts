@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders } from 'axios';
 import i18n from '../i18n';
 import { API_URL } from '../config';
-import useAuthStore from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 
 const client = axios.create({
   baseURL: API_URL,

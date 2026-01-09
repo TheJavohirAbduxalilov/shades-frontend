@@ -1,11 +1,11 @@
 import { ClipboardDocumentListIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
-import useAuthStore from '../../stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
 
 const BottomNav = () => {
   const { t } = useTranslation();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated } = useAuthStore();
   const location = useLocation();
   const path = location.pathname;
 

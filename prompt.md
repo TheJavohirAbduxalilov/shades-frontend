@@ -1,79 +1,34 @@
-Покажи полное содержимое файла src/stores/authStore.ts
+Исправь импорты authStore во всех файлах. Было `export default`, стало `export const useAuthStore`.
 
-Затем полностью перепиши файл с нуля (удали всё и напиши заново):
+Найди и исправь во всех файлах:
 
-import { create } from 'zustand';
+// Было (неправильно):
+import authStore from '../stores/authStore';
+// или
+import useAuthStore from '../stores/authStore';
 
-interface User {
-  id: number;
-  username: string;
-  fullName: string;
-  role: 'admin' | 'installer';
-  preferredLanguageCode: string;
-}
+// Стало (правильно):
+import { useAuthStore } from '../stores/authStore';
 
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  isInstaller: boolean;
-  login: (user: User, token: string) => void;
-  logout: () => void;
-  setUser: (user: User) => void;
-}
+Файлы для исправления:
+- src/api/client.ts
+- src/components/layout/BottomNav.tsx
+- src/components/layout/ProtectedRoute.tsx
+- src/hooks/useAuth.ts
+- src/pages/OrderDetailPage.tsx
+- src/pages/OrderFormPage.tsx
+- src/pages/OrdersPage.tsx
+- src/pages/ProfilePage.tsx
 
-const getStoredUser = (): User | null => {
-  try {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    return null;
-  }
-};
+И любые другие файлы где используется authStore.
 
-const storedUser = getStoredUser();
-const storedToken = localStorage.getItem('token');
+Также исправь использование селекторов с типами:
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: storedUser,
-  token: storedToken,
-  isAuthenticated: !!storedToken,
-  isAdmin: storedUser?.role === 'admin',
-  isInstaller: storedUser?.role === 'installer',
+// Было (неправильно):
+const isAdmin = useAuthStore((state) => state.isAdmin);
 
-  login: (user, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    set({
-      user,
-      token,
-      isAuthenticated: true,
-      isAdmin: user.role === 'admin',
-      isInstaller: user.role === 'installer',
-    });
-  },
+// Стало (правильно):
+const isAdmin = useAuthStore((state: { isAdmin: boolean }) => state.isAdmin);
 
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    set({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      isAdmin: false,
-      isInstaller: false,
-    });
-  },
-
-  setUser: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    set({
-      user,
-      isAdmin: user.role === 'admin',
-      isInstaller: user.role === 'installer',
-    });
-  },
-}));
-
-Убедись что файл содержит ТОЛЬКО этот код и ничего лишнего. Проверь что все скобки закрыты правильно.
+// Или ещё лучше - используй весь стор:
+const { isAdmin, isInstaller, user } = useAuthStore();

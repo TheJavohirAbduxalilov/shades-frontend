@@ -1,15 +1,10 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getMe, login as loginRequest } from '../api/auth.api';
-import useAuthStore from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 
 export const useAuth = () => {
-  const user = useAuthStore((state) => state.user);
-  const token = useAuthStore((state) => state.token);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const loginStore = useAuthStore((state) => state.login);
-  const logout = useAuthStore((state) => state.logout);
-  const setLanguage = useAuthStore((state) => state.setLanguage);
+  const { user, token, isAuthenticated, login, logout, setLanguage } = useAuthStore();
 
   const meQuery = useQuery({
     queryKey: ['me'],
@@ -20,14 +15,14 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (meQuery.data && token) {
-      loginStore(meQuery.data, token);
+      login(meQuery.data, token);
     }
-  }, [loginStore, meQuery.data, token]);
+  }, [login, meQuery.data, token]);
 
   const loginMutation = useMutation({
     mutationFn: loginRequest,
     onSuccess: (data) => {
-      loginStore(data.user, data.token);
+      login(data.user, data.token);
     },
   });
 

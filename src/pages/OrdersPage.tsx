@@ -11,12 +11,12 @@ import PageTransition from '../components/ui/PageTransition';
 import { OrderCardSkeleton } from '../components/ui/Skeleton';
 import { getInstallers } from '../api/users.api';
 import { OrdersFilters, useOrders } from '../hooks/useOrders';
-import useAuthStore from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 
 const OrdersPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const { isAdmin } = useAuthStore();
   const [filters, setFilters] = useState<OrdersFilters>({});
   const { data = [], isLoading, isError } = useOrders(filters);
   const { data: installers = [] } = useQuery({
