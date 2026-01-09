@@ -1,6 +1,6 @@
-Синтаксическая ошибка в src/stores/authStore.ts на строках 70-73. Исправь файл.
+Покажи полное содержимое файла src/stores/authStore.ts
 
-Правильная структура authStore.ts:
+Затем полностью перепиши файл с нуля (удали всё и напиши заново):
 
 import { create } from 'zustand';
 
@@ -24,16 +24,16 @@ interface AuthState {
 }
 
 const getStoredUser = (): User | null => {
-  const stored = localStorage.getItem('user');
-  return stored ? JSON.parse(stored) : null;
-};
-
-const getStoredToken = (): string | null => {
-  return localStorage.getItem('token');
+  try {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
 };
 
 const storedUser = getStoredUser();
-const storedToken = getStoredToken();
+const storedToken = localStorage.getItem('token');
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: storedUser,
@@ -75,3 +75,5 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 }));
+
+Убедись что файл содержит ТОЛЬКО этот код и ничего лишнего. Проверь что все скобки закрыты правильно.
