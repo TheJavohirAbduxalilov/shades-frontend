@@ -8,10 +8,12 @@ import Card from '../ui/Card';
 
 interface OrderCardProps {
   order: Order;
+  showInstaller?: boolean;
 }
 
-const OrderCard = ({ order }: OrderCardProps) => {
+const OrderCard = ({ order, showInstaller }: OrderCardProps) => {
   const { t, i18n } = useTranslation();
+  const installerName = order.assignedUser?.fullName || order.assignedUserName;
 
   return (
     <Link to={'/orders/' + order.id} className="block">
@@ -24,6 +26,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
             </div>
             <h3 className="mt-1 text-base font-semibold text-slate-900">{order.clientName}</h3>
             <p className="text-sm text-slate-500">{order.clientAddress}</p>
+            {showInstaller ? (
+              <p className="mt-1 text-xs text-slate-500">
+                {t('orders.assignedInstaller')}: {installerName || t('orders.notAssigned')}
+              </p>
+            ) : null}
             <p className="mt-2 text-xs text-slate-500">
               {t('orders.visitDate')}: {formatDate(order.visitDate, i18n.language)}
             </p>

@@ -14,7 +14,8 @@
     "loading": "Загрузка...",
     "error": "Ошибка",
     "success": "Успешно",
-    "saved": "Сохранено"
+    "saved": "Сохранено",
+    "done": "Готово"
   },
   "auth": {
     "login": "Вход",
@@ -25,11 +26,38 @@
   },
   "orders": {
     "title": "Заказы",
+    "create": "Создать заказ",
+    "edit": "Редактировать заказ",
+    "created": "Заказ создан",
     "search": "Поиск по имени или адресу",
     "filters": "Фильтры",
     "allStatuses": "Все статусы",
+    "allInstallers": "Все замерщики",
     "noOrders": "Нет заказов",
-    "visitDate": "Дата визита"
+    "visitDate": "Дата визита",
+    "trackingLinkDescription": "Отправьте эту ссылку клиенту для отслеживания заказа:",
+    "trackingLink": "Ссылка для клиента",
+    "clientName": "Имя клиента",
+    "clientPhone": "Телефон клиента",
+    "clientAddress": "Адрес клиента",
+    "notes": "Заметки",
+    "assignedInstaller": "Назначенный замерщик",
+    "notAssigned": "Не назначен",
+    "complete": "Завершить заказ",
+    "completeConfirmTitle": "Завершить заказ?",
+    "completeConfirmMessage": "После завершения заказ нельзя будет редактировать или удалить.",
+    "deleteConfirmTitle": "Удалить заказ?",
+    "deleteConfirmMessage": "Это действие нельзя отменить."
+  },
+  "tracking": {
+    "title": "Отслеживание заказа",
+    "notFound": "Заказ не найден",
+    "notFoundDescription": "Проверьте правильность ссылки.",
+    "status": "Статус заказа",
+    "visitDate": "Дата визита замерщика",
+    "orderDetails": "Детали заказа",
+    "total": "Итого",
+    "contactUs": "Связаться с нами"
   },
   "order": {
     "clientInfo": "Информация о клиенте",

@@ -7,6 +7,8 @@ export interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
+  isInstaller: boolean;
   login: (user: User, token: string) => void;
   logout: () => void;
   setLanguage: (lang: string) => void;
@@ -18,13 +20,28 @@ const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isAdmin: false,
+      isInstaller: false,
       login: (user, token) => {
-        set({ user, token, isAuthenticated: true });
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+          isAdmin: user.role === 'admin',
+          isInstaller: user.role === 'installer',
+        });
         if (user?.preferredLanguageCode) {
           i18n.changeLanguage(user.preferredLanguageCode);
         }
       },
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+      logout: () =>
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isAdmin: false,
+          isInstaller: false,
+        }),
       setLanguage: (lang) => {
         const currentUser = get().user;
         if (currentUser) {
@@ -40,6 +57,16 @@ const useAuthStore = create<AuthState>()(
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        isAdmin: state.isAdmin,
+        isInstaller: state.isInstaller,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) {
+          return;
+        }
+        const role = state.user?.role;
+        state.isAdmin = role === 'admin';
+        state.isInstaller = role === 'installer';
       }),
     }
   )

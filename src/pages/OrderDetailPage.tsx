@@ -1,22 +1,67 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
+import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { completeOrder, deleteOrder } from '../api/orders.api';
 import ClientInfo from '../components/orders/ClientInfo';
 import WindowList from '../components/windows/WindowList';
 import PageHeader from '../components/layout/PageHeader';
 import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
 import PageTransition from '../components/ui/PageTransition';
 import { CardSkeleton, WindowCardSkeleton } from '../components/ui/Skeleton';
 import { useOrder } from '../hooks/useOrders';
+import useAuthStore from '../stores/authStore';
 
 const OrderDetailPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const orderId = params.orderId || '';
-  const { data: order, isLoading, isError } = useOrder(orderId);
+  const { data: order, isLoading, isError, refetch } = useOrder(orderId);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const windows = useMemo(() => order?.windows || [], [order]);
+  const isCompleted = order?.status === 'completed';
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!order) {
+        throw new Error('Order not loaded');
+      }
+      return deleteOrder(order.id);
+    },
+    onSuccess: () => {
+      setShowDeleteModal(false);
+      navigate('/orders');
+    },
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: async () => {
+      if (!order) {
+        throw new Error('Order not loaded');
+      }
+      return completeOrder(order.id);
+    },
+    onSuccess: () => {
+      setShowCompleteModal(false);
+      refetch();
+    },
+  });
+
+  const handleCopyTrackingLink = async () => {
+    if (!order?.trackingCode) {
+      return;
+    }
+    await navigator.clipboard.writeText(`${window.location.origin}/track/${order.trackingCode}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   if (isLoading) {
     return (
@@ -47,6 +92,43 @@ const OrderDetailPage = () => {
       <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
         <PageHeader title={t('order.clientInfo')} onBack={() => navigate('/orders')} />
         <ClientInfo order={order} />
+        {isAdmin ? (
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900">{t('orders.trackingLink')}</h3>
+            <div className="mt-3 flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2">
+              <input
+                type="text"
+                value={
+                  order.trackingCode ? `${window.location.origin}/track/${order.trackingCode}` : ''
+                }
+                readOnly
+                className="flex-1 bg-transparent text-xs text-slate-600 outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleCopyTrackingLink}
+                className="rounded-lg p-2 transition-colors hover:bg-slate-200"
+              >
+                <ClipboardDocumentIcon
+                  className={`h-5 w-5 ${copied ? 'text-emerald-600' : 'text-slate-600'}`}
+                />
+              </button>
+            </div>
+          </div>
+        ) : null}
+        {isAdmin && !isCompleted ? (
+          <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm">
+            <Button variant="secondary" fullWidth onClick={() => navigate(`/orders/${order.id}/edit`)}>
+              {t('common.edit')}
+            </Button>
+            <Button fullWidth onClick={() => setShowCompleteModal(true)}>
+              {t('orders.complete')}
+            </Button>
+            <Button variant="danger" fullWidth onClick={() => setShowDeleteModal(true)}>
+              {t('common.delete')}
+            </Button>
+          </div>
+        ) : null}
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-900">{t('order.windows')}</h2>
           <Button size="sm" onClick={() => navigate('/orders/' + orderId + '/windows/new')}>
@@ -58,6 +140,38 @@ const OrderDetailPage = () => {
           {t('order.summary')}
         </Button>
       </div>
+      <Modal
+        isOpen={showCompleteModal}
+        title={t('orders.completeConfirmTitle')}
+        onClose={() => setShowCompleteModal(false)}
+        actions={
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button variant="secondary" onClick={() => setShowCompleteModal(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={() => completeMutation.mutate()}>{t('orders.complete')}</Button>
+          </div>
+        }
+      >
+        {t('orders.completeConfirmMessage')}
+      </Modal>
+      <Modal
+        isOpen={showDeleteModal}
+        title={t('orders.deleteConfirmTitle')}
+        onClose={() => setShowDeleteModal(false)}
+        actions={
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button variant="danger" onClick={() => deleteMutation.mutate()}>
+              {t('common.delete')}
+            </Button>
+          </div>
+        }
+      >
+        {t('orders.deleteConfirmMessage')}
+      </Modal>
     </PageTransition>
   );
 };

@@ -4,9 +4,10 @@ import OrderCard from './OrderCard';
 
 interface OrderListProps {
   orders: Order[];
+  showInstaller?: boolean;
 }
 
-const OrderList = ({ orders }: OrderListProps) => {
+const OrderList = ({ orders, showInstaller }: OrderListProps) => {
   const { t } = useTranslation();
 
   if (!orders.length) {
@@ -21,7 +22,7 @@ const OrderList = ({ orders }: OrderListProps) => {
           className="animate-slideUp"
           style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
         >
-          <OrderCard order={order} />
+          <OrderCard order={order} showInstaller={showInstaller} />
         </div>
       ))}
     </div>

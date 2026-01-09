@@ -5,14 +5,16 @@ import { Order } from '../types';
 export interface OrdersFilters {
   status?: string[];
   search?: string;
+  assignedUserId?: string;
 }
 
 export const useOrders = (filters: OrdersFilters) => {
   const statusKey = filters.status ? filters.status.join(',') : 'all';
   const searchKey = filters.search || '';
+  const installerKey = filters.assignedUserId || 'all';
 
   return useQuery({
-    queryKey: ['orders', statusKey, searchKey],
+    queryKey: ['orders', statusKey, searchKey, installerKey],
     queryFn: () => getOrders(filters),
   });
 };

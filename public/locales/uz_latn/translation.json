@@ -14,7 +14,8 @@
     "loading": "Yuklanmoqda...",
     "error": "Xatolik",
     "success": "Muvaffaqiyatli",
-    "saved": "Saqlandi"
+    "saved": "Saqlandi",
+    "done": "Tayyor"
   },
   "auth": {
     "login": "Kirish",
@@ -25,11 +26,38 @@
   },
   "orders": {
     "title": "Buyurtmalar",
+    "create": "Buyurtma yaratish",
+    "edit": "Buyurtmani tahrirlash",
+    "created": "Buyurtma yaratildi",
     "search": "Ism yoki manzil bo'yicha qidirish",
     "filters": "Filtrlar",
     "allStatuses": "Barcha holatlar",
+    "allInstallers": "Barcha o'lchovchilar",
     "noOrders": "Buyurtmalar yo'q",
-    "visitDate": "Tashrif sanasi"
+    "visitDate": "Tashrif sanasi",
+    "trackingLinkDescription": "Buyurtmani kuzatish uchun ushbu havolani mijozga yuboring:",
+    "trackingLink": "Mijoz uchun havola",
+    "clientName": "Mijoz ismi",
+    "clientPhone": "Mijoz telefoni",
+    "clientAddress": "Mijoz manzili",
+    "notes": "Izohlar",
+    "assignedInstaller": "Tayinlangan o'lchovchi",
+    "notAssigned": "Tayinlanmagan",
+    "complete": "Buyurtmani yakunlash",
+    "completeConfirmTitle": "Buyurtmani yakunlaysizmi?",
+    "completeConfirmMessage": "Yakunlangandan so'ng buyurtmani tahrirlab yoki o'chirib bo'lmaydi.",
+    "deleteConfirmTitle": "Buyurtmani o'chirasizmi?",
+    "deleteConfirmMessage": "Bu amalni bekor qilib bo'lmaydi."
+  },
+  "tracking": {
+    "title": "Buyurtmani kuzatish",
+    "notFound": "Buyurtma topilmadi",
+    "notFoundDescription": "Havola to'g'riligini tekshiring.",
+    "status": "Buyurtma holati",
+    "visitDate": "O'lchovchi tashrif sanasi",
+    "orderDetails": "Buyurtma tafsilotlari",
+    "total": "Jami",
+    "contactUs": "Biz bilan bog'lanish"
   },
   "order": {
     "clientInfo": "Mijoz ma'lumotlari",

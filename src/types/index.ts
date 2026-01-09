@@ -2,11 +2,25 @@ export interface User {
   id: number;
   username: string;
   fullName: string;
+  role: 'admin' | 'installer';
   preferredLanguageCode: string;
 }
 
-export interface Order {
+export interface Installer {
   id: number;
+  username: string;
+  fullName: string;
+}
+
+export interface CompanyInfo {
+  name: string;
+  phone: string;
+  workingHours: string;
+}
+
+export interface TrackingOrder {
+  id: number;
+  trackingCode: string;
   clientName: string;
   clientPhone: string;
   clientAddress: string;
@@ -15,6 +29,23 @@ export interface Order {
   status: 'new' | 'in_progress' | 'measured' | 'completed';
   statusName: string;
   windows: Window[];
+  totalPrice: number;
+}
+
+export interface Order {
+  id: number;
+  trackingCode?: string;
+  clientName: string;
+  clientPhone: string;
+  clientAddress: string;
+  notes: string | null;
+  visitDate: string;
+  status: 'new' | 'in_progress' | 'measured' | 'completed';
+  statusName: string;
+  windows: Window[];
+  assignedUserId?: number | null;
+  assignedUserName?: string | null;
+  assignedUser?: Installer | null;
   totalPrice?: number;
 }
 

@@ -1,22 +1,50 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import OrderFilters from '../components/orders/OrderFilters';
 import OrderList from '../components/orders/OrderList';
 import PageHeader from '../components/layout/PageHeader';
+import Button from '../components/ui/Button';
 import PageTransition from '../components/ui/PageTransition';
 import { OrderCardSkeleton } from '../components/ui/Skeleton';
+import { getInstallers } from '../api/users.api';
 import { OrdersFilters, useOrders } from '../hooks/useOrders';
+import useAuthStore from '../stores/authStore';
 
 const OrdersPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const isAdmin = useAuthStore((state) => state.isAdmin);
   const [filters, setFilters] = useState<OrdersFilters>({});
   const { data = [], isLoading, isError } = useOrders(filters);
+  const { data: installers = [] } = useQuery({
+    queryKey: ['installers'],
+    queryFn: getInstallers,
+    enabled: isAdmin,
+  });
 
   return (
     <PageTransition>
       <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
-        <PageHeader title={t('orders.title')} />
-        <OrderFilters filters={filters} onChange={setFilters} />
+        <PageHeader
+          title={t('orders.title')}
+          actions={
+            isAdmin ? (
+              <Button size="sm" className="gap-2" onClick={() => navigate('/orders/new')}>
+                <PlusIcon className="h-5 w-5" />
+                {t('orders.create')}
+              </Button>
+            ) : null
+          }
+        />
+        <OrderFilters
+          filters={filters}
+          onChange={setFilters}
+          installers={installers}
+          showInstallerFilter={isAdmin}
+        />
         {isLoading ? (
           <div className="space-y-3">
             <OrderCardSkeleton />
@@ -26,7 +54,7 @@ const OrdersPage = () => {
         ) : isError ? (
           <p className="text-sm text-error">{t('errors.network')}</p>
         ) : (
-          <OrderList orders={data} />
+          <OrderList orders={data} showInstaller={isAdmin} />
         )}
       </div>
     </PageTransition>
