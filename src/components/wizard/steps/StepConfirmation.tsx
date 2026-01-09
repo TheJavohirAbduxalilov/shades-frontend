@@ -86,7 +86,7 @@ const StepConfirmation = ({ catalog }: StepConfirmationProps) => {
           {data.width && data.height ? (
             <p>
               <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {data.width} x
-              {data.height}
+              {data.height} мм
             </p>
           ) : null}
           {optionSummaries.length ? (

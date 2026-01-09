@@ -27,7 +27,7 @@ const WindowDetails = ({ window }: WindowDetailsProps) => {
         </p>
         <p>
           <span className="font-medium text-slate-700">{t('window.dimensions')}:</span> {shade.width} x
-          {shade.height}
+          {shade.height} мм
         </p>
         <div>
           <span className="font-medium text-slate-700">{t('wizard.installation')}:</span>

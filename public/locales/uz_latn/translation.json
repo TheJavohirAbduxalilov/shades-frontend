@@ -45,8 +45,8 @@
     "name": "Oyna nomi",
     "namePlaceholder": "Masalan: Yotoqxonadagi oyna",
     "dimensions": "O'lchamlar",
-    "width": "Kenglik (sm)",
-    "height": "Balandlik (sm)",
+    "width": "Kenglik (mm)",
+    "height": "Balandlik (mm)",
     "price": "Narx"
   },
   "wizard": {
@@ -63,6 +63,11 @@
     "services": "Qo'shimcha xizmatlar",
     "confirmation": "Tasdiqlash",
     "copyPrevious": "Oldingi oyna sozlamalarini ishlatasizmi?",
+    "copyFromWindow": "Sozlamalarni nusxalash?",
+    "copyFromWindowDescription": "Sozlamalarini ishlatmoqchi bo'lgan oynani tanlang.",
+    "selectWindow": "Oynani tanlang",
+    "copySettings": "Nusxalash",
+    "startEmpty": "Bo'sh boshlash",
     "totalPrice": "Narxi",
     "resumeTitle": "Qoralamani davom ettirasizmi?",
     "resumeMessage": "Ushbu oyna uchun tugallanmagan qoralama bor.",

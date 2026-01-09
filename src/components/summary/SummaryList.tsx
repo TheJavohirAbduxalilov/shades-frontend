@@ -32,7 +32,7 @@ const SummaryList = ({ windows }: SummaryListProps) => {
               {shade ? (
                 <div className="space-y-1">
                   <p>
-                    {t('window.dimensions')}: {shade.width} x {shade.height}
+                    {t('window.dimensions')}: {shade.width} x {shade.height} мм
                   </p>
                   <p>
                     {t('wizard.material')}: {shade.materialName}

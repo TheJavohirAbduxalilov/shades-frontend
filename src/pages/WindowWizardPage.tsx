@@ -11,7 +11,7 @@ import StepMaterial from '../components/wizard/steps/StepMaterial';
 import StepColor from '../components/wizard/steps/StepColor';
 import StepServices from '../components/wizard/steps/StepServices';
 import StepConfirmation from '../components/wizard/steps/StepConfirmation';
-import CopyPreviousModal from '../components/wizard/CopyPreviousModal';
+import CopyFromWindowModal from '../components/wizard/CopyFromWindowModal';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
 import LoadingScreen from '../components/ui/LoadingScreen';
@@ -111,19 +111,14 @@ const WindowWizardPage = () => {
     return order.windows.find((item) => String(item.id) === String(windowId)) || null;
   }, [order, windowId]);
 
-  const previousShade = useMemo(() => {
+  const windowsWithShade = useMemo(() => {
     if (!order) {
-      return null;
+      return [];
     }
-    return (
-      order.windows
-        .map((item) => item.shade)
-        .filter(Boolean)
-        .slice(-1)[0] || null
-    );
+    return order.windows.filter((windowItem) => Boolean(windowItem.shade));
   }, [order]);
 
-  const hasPreviousWindow = Boolean(previousShade);
+  const hasPreviousWindow = windowsWithShade.length > 0;
 
   const isVertical = useMemo(() => {
     if (!catalog || !wizard.data.shadeTypeId) {
@@ -229,18 +224,17 @@ const WindowWizardPage = () => {
     setShowCopyModal(false);
   };
 
-  const handleCopyPrevious = () => {
-    if (!order) {
-      return;
+  const handleCopyFromWindow = (windowIdToCopy: number) => {
+    const windowToCopy = order?.windows.find((windowItem) => windowItem.id === windowIdToCopy);
+    if (windowToCopy?.shade) {
+      wizard.copyFromPrevious(windowToCopy.shade);
+      const materialId = findMaterialIdFromShade(catalog, windowToCopy.shade);
+      wizard.updateData({ windowName: '', width: null, height: null, materialId });
     }
-    if (!previousShade) {
-      setShowCopyModal(false);
-      return;
-    }
+    setShowCopyModal(false);
+  };
 
-    wizard.copyFromPrevious(previousShade);
-    const materialId = findMaterialIdFromShade(catalog, previousShade);
-    wizard.updateData({ windowName: '', width: null, height: null, materialId });
+  const handleSkipCopy = () => {
     setShowCopyModal(false);
   };
 
@@ -453,10 +447,12 @@ const WindowWizardPage = () => {
           {t('wizard.resumeMessage')}
         </Modal>
 
-        <CopyPreviousModal
+        <CopyFromWindowModal
           isOpen={showCopyModal}
-          onConfirm={handleCopyPrevious}
           onClose={() => setShowCopyModal(false)}
+          windows={order?.windows || []}
+          onCopy={handleCopyFromWindow}
+          onSkip={handleSkipCopy}
         />
       </>
     </PageTransition>

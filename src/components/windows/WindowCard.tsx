@@ -25,7 +25,7 @@ const WindowCard = ({ orderId, window }: WindowCardProps) => {
               <div className="mt-1 space-y-1 text-sm text-slate-500">
                 <p>{shade.shadeTypeName}</p>
                 <p>
-                  {shade.width} x {shade.height}
+                  {shade.width} x {shade.height} мм
                 </p>
               </div>
             ) : (
