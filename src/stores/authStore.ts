@@ -21,18 +21,26 @@ interface AuthState {
   setLanguage: (lang: string) => void;
 }
 
+const normalizeRole = (role: string | undefined): 'admin' | 'installer' | null => {
+  if (!role) return null;
+  const lower = role.toLowerCase();
+  if (lower === 'admin') return 'admin';
+  if (lower === 'installer') return 'installer';
+  return null;
+};
+
 const getStoredUser = (): User | null => {
   try {
     const stored = localStorage.getItem('user');
     if (!stored) return null;
     const parsed = JSON.parse(stored);
-    // Validate that user has required role field
-    if (!parsed.role || !['admin', 'installer'].includes(parsed.role)) {
+    const normalizedRole = normalizeRole(parsed.role);
+    if (!normalizedRole) {
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       return null;
     }
-    return parsed;
+    return { ...parsed, role: normalizedRole };
   } catch {
     return null;
   }
@@ -49,14 +57,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isInstaller: storedUser?.role === 'installer',
 
   login: (user, token) => {
+    const role = normalizeRole(user.role) || 'installer';
+    const normalizedUser = { ...user, role };
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
     set({
-      user,
+      user: normalizedUser,
       token,
       isAuthenticated: true,
-      isAdmin: user.role === 'admin',
-      isInstaller: user.role === 'installer',
+      isAdmin: role === 'admin',
+      isInstaller: role === 'installer',
     });
   },
 
@@ -73,11 +83,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   setUser: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
+    const role = normalizeRole(user.role) || 'installer';
+    const normalizedUser = { ...user, role };
+    localStorage.setItem('user', JSON.stringify(normalizedUser));
     set({
-      user,
-      isAdmin: user.role === 'admin',
-      isInstaller: user.role === 'installer',
+      user: normalizedUser,
+      isAdmin: role === 'admin',
+      isInstaller: role === 'installer',
     });
   },
   setLanguage: (lang) => {
