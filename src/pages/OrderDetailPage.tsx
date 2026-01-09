@@ -34,7 +34,6 @@ const OrderDetailPage = () => {
     user?.id &&
     order?.assignedUserId != null &&
     order.assignedUserId !== user.id;
-  const canMarkInProgress = isInstaller && order?.status === 'new';
   const canMarkMeasured = isInstaller && order?.status === 'in_progress';
   const canManageWindows = isInstaller;
 
@@ -150,26 +149,15 @@ const OrderDetailPage = () => {
             </div>
           </div>
         ) : null}
-        {isInstaller && (canMarkInProgress || canMarkMeasured) ? (
+        {isInstaller && canMarkMeasured ? (
           <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm">
-            {canMarkInProgress ? (
-              <Button
-                fullWidth
-                onClick={() => statusMutation.mutate('in_progress')}
-                isLoading={statusMutation.isPending}
-              >
-                {t('status.in_progress')}
-              </Button>
-            ) : null}
-            {canMarkMeasured ? (
-              <Button
-                fullWidth
-                onClick={() => statusMutation.mutate('measured')}
-                isLoading={statusMutation.isPending}
-              >
-                {t('status.measured')}
-              </Button>
-            ) : null}
+            <Button
+              fullWidth
+              onClick={() => statusMutation.mutate('measured')}
+              isLoading={statusMutation.isPending}
+            >
+              {t('status.measured')}
+            </Button>
           </div>
         ) : null}
         {isAdmin && !isCompleted ? (
