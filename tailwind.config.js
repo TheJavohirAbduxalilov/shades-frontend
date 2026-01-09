@@ -22,6 +22,10 @@ module.exports = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         slideUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
@@ -37,6 +41,7 @@ module.exports = {
       },
       animation: {
         fadeIn: 'fadeIn 0.3s ease-out',
+        slideDown: 'slideDown 0.3s ease-out',
         slideUp: 'slideUp 0.3s ease-out',
         slideIn: 'slideIn 0.3s ease-out',
         scaleIn: 'scaleIn 0.2s ease-out',

@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import {
+  CheckCircleIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { create } from 'zustand';
 
 export type ToastType = 'success' | 'error' | 'info';
@@ -42,8 +47,8 @@ const ToastViewport = () => {
   const remove = useToastStore((state) => state.remove);
 
   return (
-    <div className="pointer-events-none fixed top-4 right-4 z-50 w-[calc(100%-2rem)] max-w-sm">
-      <div className="flex flex-col gap-3">
+    <div className="pointer-events-none fixed left-4 right-4 top-4 z-[100]">
+      <div className="mx-auto flex max-w-md flex-col gap-3">
         {toasts.map((toastItem) => (
           <ToastMessage key={toastItem.id} toast={toastItem} onClose={() => remove(toastItem.id)} />
         ))}
@@ -58,23 +63,34 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
     return () => clearTimeout(timer);
   }, [onClose]);
 
+  const icons = {
+    success: <CheckCircleIcon className="h-6 w-6 text-emerald-500" />,
+    error: <XCircleIcon className="h-6 w-6 text-red-500" />,
+    info: <InformationCircleIcon className="h-6 w-6 text-blue-500" />,
+  };
+
   const tone = {
-    success: 'border-success/30 bg-success/10 text-emerald-700',
-    error: 'border-error/30 bg-error/10 text-red-700',
-    info: 'border-primary-200 bg-primary-50 text-primary-700',
+    success: 'border-emerald-200 bg-emerald-50',
+    error: 'border-red-200 bg-red-50',
+    info: 'border-blue-200 bg-blue-50',
   };
 
   return (
     <div
       className={[
-        'pointer-events-auto flex items-start justify-between gap-3 rounded-xl border px-4 py-3 text-sm shadow-lg animate-slideIn',
+        'pointer-events-auto flex items-center gap-3 rounded-lg border px-4 py-3 text-sm shadow-lg animate-slideDown',
         tone[toast.type],
       ]
         .filter(Boolean)
         .join(' ')}
     >
-      <span>{toast.message}</span>
-      <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-700">
+      <span className="flex-shrink-0">{icons[toast.type]}</span>
+      <span className="flex-1 font-medium text-slate-800">{toast.message}</span>
+      <button
+        type="button"
+        onClick={onClose}
+        className="flex-shrink-0 rounded-full p-1 text-slate-500 transition-colors hover:bg-black/5 hover:text-slate-700"
+      >
         <XMarkIcon className="h-4 w-4" />
       </button>
     </div>
