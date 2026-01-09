@@ -161,16 +161,16 @@ const OrderDetailPage = () => {
           </div>
         ) : null}
         {isAdmin && !isCompleted ? (
-          <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm">
-            <Button variant="secondary" fullWidth onClick={() => navigate(`/orders/${order.id}/edit`)}>
+          <div className="grid gap-3">
+            <Button onClick={() => navigate(`/orders/${order.id}/edit`)}>
               {t('common.edit')}
             </Button>
             {isMeasured ? (
-              <Button fullWidth onClick={() => setShowCompleteModal(true)}>
+              <Button variant="secondary" onClick={() => setShowCompleteModal(true)}>
                 {t('orders.complete')}
               </Button>
             ) : null}
-            <Button variant="danger" fullWidth onClick={() => setShowDeleteModal(true)}>
+            <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
               {t('common.delete')}
             </Button>
           </div>
