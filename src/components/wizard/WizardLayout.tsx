@@ -35,7 +35,9 @@ const WizardLayout = ({
     <div className="mx-auto flex min-h-screen max-w-xl flex-col gap-6 px-4 pb-28 pt-6">
       <PageHeader title={title} onBack={onPrev} />
       <WizardProgress currentStep={currentStep} totalSteps={totalSteps} />
-      <div>{children}</div>
+      <div key={currentStep} className="animate-fadeIn">
+        {children}
+      </div>
       <div className="mt-auto flex gap-3">
         <Button variant="ghost" fullWidth onClick={onPrev}>
           {prevLabel || t('common.back')}

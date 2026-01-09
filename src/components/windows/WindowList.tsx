@@ -16,8 +16,14 @@ const WindowList = ({ orderId, windows }: WindowListProps) => {
 
   return (
     <div className="space-y-3">
-      {windows.map((windowItem) => (
-        <WindowCard key={windowItem.id} orderId={orderId} window={windowItem} />
+      {windows.map((windowItem, index) => (
+        <div
+          key={windowItem.id}
+          className="animate-slideUp"
+          style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+        >
+          <WindowCard orderId={orderId} window={windowItem} />
+        </div>
       ))}
     </div>
   );

@@ -4,8 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import WindowDetails from '../components/windows/WindowDetails';
 import PageHeader from '../components/layout/PageHeader';
 import Button from '../components/ui/Button';
+import LoadingScreen from '../components/ui/LoadingScreen';
 import Modal from '../components/ui/Modal';
-import Spinner from '../components/ui/Spinner';
+import PageTransition from '../components/ui/PageTransition';
 import { toast } from '../components/ui/Toast';
 import { useOrder } from '../hooks/useOrders';
 import { useDeleteShade } from '../hooks/useShades';
@@ -47,47 +48,52 @@ const WindowViewPage = () => {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex max-w-xl items-center gap-2 px-4 pb-28 pt-6 text-sm text-slate-500">
-        <Spinner size="sm" />
-        {t('common.loading')}
-      </div>
+      <PageTransition>
+        <LoadingScreen />
+      </PageTransition>
     );
   }
 
   if (isError || !windowItem) {
-    return <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>;
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>
+      </PageTransition>
+    );
   }
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
-      <PageHeader title={windowItem.name} onBack={() => navigate('/orders/' + orderId)} />
-      <WindowDetails window={windowItem} />
-      <div className="grid gap-3">
-        <Button onClick={() => navigate('/orders/' + orderId + '/windows/' + windowId + '/edit')}>
-          {t('common.edit')}
-        </Button>
-        <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
-          {t('common.delete')}
-        </Button>
+    <PageTransition>
+      <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
+        <PageHeader title={windowItem.name} onBack={() => navigate('/orders/' + orderId)} />
+        <WindowDetails window={windowItem} />
+        <div className="grid gap-3">
+          <Button onClick={() => navigate('/orders/' + orderId + '/windows/' + windowId + '/edit')}>
+            {t('common.edit')}
+          </Button>
+          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+            {t('common.delete')}
+          </Button>
+        </div>
+        <Modal
+          isOpen={showDeleteModal}
+          title={t('delete.windowTitle')}
+          onClose={() => setShowDeleteModal(false)}
+          actions={
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+              <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
+                {t('common.cancel')}
+              </Button>
+              <Button variant="danger" onClick={handleDelete}>
+                {t('common.delete')}
+              </Button>
+            </div>
+          }
+        >
+          {t('delete.windowMessage')}
+        </Modal>
       </div>
-      <Modal
-        isOpen={showDeleteModal}
-        title={t('delete.windowTitle')}
-        onClose={() => setShowDeleteModal(false)}
-        actions={
-          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button variant="ghost" onClick={() => setShowDeleteModal(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button variant="danger" onClick={handleDelete}>
-              {t('common.delete')}
-            </Button>
-          </div>
-        }
-      >
-        {t('delete.windowMessage')}
-      </Modal>
-    </div>
+    </PageTransition>
   );
 };
 

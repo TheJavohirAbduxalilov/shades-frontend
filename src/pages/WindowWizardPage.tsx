@@ -14,7 +14,8 @@ import StepConfirmation from '../components/wizard/steps/StepConfirmation';
 import CopyPreviousModal from '../components/wizard/CopyPreviousModal';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
+import LoadingScreen from '../components/ui/LoadingScreen';
+import PageTransition from '../components/ui/PageTransition';
 import { toast } from '../components/ui/Toast';
 import { useCatalog } from '../hooks/useCatalog';
 import { useOrder } from '../hooks/useOrders';
@@ -395,57 +396,70 @@ const WindowWizardPage = () => {
 
   if (orderLoading) {
     return (
-      <div className="mx-auto flex max-w-xl items-center gap-2 px-4 pb-28 pt-6 text-sm text-slate-500">
-        <Spinner size="sm" />
-        {t('common.loading')}
-      </div>
+      <PageTransition>
+        <LoadingScreen />
+      </PageTransition>
     );
   }
 
   if (orderError || !order) {
-    return <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>;
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>
+      </PageTransition>
+    );
   }
 
   if (isEditing && !windowItem) {
-    return <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.unknown')}</p>;
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.unknown')}</p>
+      </PageTransition>
+    );
   }
 
   return (
-    <>
-      <WizardLayout
-        title={stepTitles[wizard.currentStep - 1]}
-        currentStep={wizard.currentStep}
-        totalSteps={TOTAL_STEPS}
-        onNext={handleNext}
-        onPrev={handlePrev}
-        nextLabel={wizard.currentStep === TOTAL_STEPS ? t('common.save') : undefined}
-        isNextLoading={isSaving}
-        isNextDisabled={catalogLoading && wizard.currentStep > 1}
-      >
-        <div key={wizard.currentStep} className="animate-fade-in">
-          {catalogError ? <p className="mb-3 text-sm text-error">{t('errors.network')}</p> : null}
-          {steps[wizard.currentStep - 1]}
-        </div>
-      </WizardLayout>
-
-      <Modal
-        isOpen={showDraftModal}
-        title={t('wizard.resumeTitle')}
-        onClose={handleCloseDraftModal}
-        actions={
-          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button variant="secondary" onClick={handleStartNew}>
-              {t('common.startOver')}
-            </Button>
-            <Button onClick={handleContinueDraft}>{t('common.continue')}</Button>
+    <PageTransition>
+      <>
+        <WizardLayout
+          title={stepTitles[wizard.currentStep - 1]}
+          currentStep={wizard.currentStep}
+          totalSteps={TOTAL_STEPS}
+          onNext={handleNext}
+          onPrev={handlePrev}
+          nextLabel={wizard.currentStep === TOTAL_STEPS ? t('common.save') : undefined}
+          isNextLoading={isSaving}
+          isNextDisabled={catalogLoading && wizard.currentStep > 1}
+        >
+          <div>
+            {catalogError ? <p className="mb-3 text-sm text-error">{t('errors.network')}</p> : null}
+            {steps[wizard.currentStep - 1]}
           </div>
-        }
-      >
-        {t('wizard.resumeMessage')}
-      </Modal>
+        </WizardLayout>
 
-      <CopyPreviousModal isOpen={showCopyModal} onConfirm={handleCopyPrevious} onClose={() => setShowCopyModal(false)} />
-    </>
+        <Modal
+          isOpen={showDraftModal}
+          title={t('wizard.resumeTitle')}
+          onClose={handleCloseDraftModal}
+          actions={
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+              <Button variant="secondary" onClick={handleStartNew}>
+                {t('common.startOver')}
+              </Button>
+              <Button onClick={handleContinueDraft}>{t('common.continue')}</Button>
+            </div>
+          }
+        >
+          {t('wizard.resumeMessage')}
+        </Modal>
+
+        <CopyPreviousModal
+          isOpen={showCopyModal}
+          onConfirm={handleCopyPrevious}
+          onClose={() => setShowCopyModal(false)}
+        />
+      </>
+    </PageTransition>
   );
 };
 

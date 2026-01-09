@@ -1,155 +1,220 @@
-Добавь визуальное различие между информационными и интерактивными элементами, а также hover/active эффекты для мобильной версии.
+Добавь плавные переходы между страницами и состояниями загрузки.
 
-## 1. Интерактивные карточки (окна, заказы) — добавь стрелку и эффекты
+## 1. Создай компонент PageTransition для анимации страниц
 
-В WindowCard.tsx и OrderCard.tsx:
+Создай src/components/ui/PageTransition.tsx:
 
-// Добавь иконку chevron справа
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ReactNode } from 'react';
 
-<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm 
-  cursor-pointer transition-all duration-150
-  hover:bg-gray-50 hover:shadow-md
-  active:scale-[0.98] active:bg-gray-100">
-  
-  <div className="flex-1">
-    <h3 className="font-medium">{window.name}</h3>
-    <p className="text-sm text-gray-500">{shade?.shadeTypeName}</p>
-    <p className="text-sm text-gray-500">{width} x {height}</p>
+interface PageTransitionProps {
+  children: ReactNode;
+}
+
+export const PageTransition = ({ children }: PageTransitionProps) => {
+  return (
+    <div className="animate-fadeIn">
+      {children}
+    </div>
+  );
+};
+
+## 2. Добавь анимации в tailwind.config.js:
+
+module.exports = {
+  theme: {
+    extend: {
+      animation: {
+        'fadeIn': 'fadeIn 0.3s ease-out',
+        'slideUp': 'slideUp 0.3s ease-out',
+        'slideIn': 'slideIn 0.3s ease-out',
+        'scaleIn': 'scaleIn 0.2s ease-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideIn: {
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};
+
+## 3. Создай компонент LoadingScreen
+
+Создай src/components/ui/LoadingScreen.tsx:
+
+export const LoadingScreen = () => {
+  return (
+    <div className="flex items-center justify-center min-h-[50vh] animate-fadeIn">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+        <p className="text-gray-500">Загрузка...</p>
+      </div>
+    </div>
+  );
+};
+
+## 4. Создай компонент Skeleton для карточек
+
+Создай src/components/ui/Skeleton.tsx:
+
+export const CardSkeleton = () => {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow-sm animate-pulse">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+          <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        </div>
+        <div className="w-5 h-5 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  );
+};
+
+export const OrderCardSkeleton = () => {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow-sm animate-pulse">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="h-4 bg-gray-200 rounded w-12"></div>
+        <div className="h-5 bg-gray-200 rounded-full w-20"></div>
+      </div>
+      <div className="h-5 bg-gray-200 rounded w-2/3 mb-2"></div>
+      <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
+      <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+    </div>
+  );
+};
+
+export const WindowCardSkeleton = () => {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow-sm animate-pulse">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/3 mb-1"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-5 bg-gray-200 rounded w-24"></div>
+          <div className="w-5 h-5 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+## 5. Оберни страницы в PageTransition
+
+В каждой странице (OrdersPage.tsx, OrderDetailPage.tsx, и т.д.):
+
+import { PageTransition } from '../components/ui/PageTransition';
+import { LoadingScreen } from '../components/ui/LoadingScreen';
+import { OrderCardSkeleton } from '../components/ui/Skeleton';
+
+export const OrdersPage = () => {
+  const { data: orders, isLoading } = useOrders();
+
+  if (isLoading) {
+    return (
+      <PageTransition>
+        <div className="p-4 space-y-4">
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+        </div>
+      </PageTransition>
+    );
+  }
+
+  return (
+    <PageTransition>
+      <div className="p-4">
+        {/* контент страницы */}
+      </div>
+    </PageTransition>
+  );
+};
+
+## 6. Анимация для списков — каскадная загрузка
+
+В OrderList.tsx и WindowList.tsx добавь задержку анимации для каждого элемента:
+
+{orders.map((order, index) => (
+  <div 
+    key={order.id}
+    className="animate-slideUp"
+    style={{ animationDelay: `${index * 50}ms` }}
+  >
+    <OrderCard order={order} />
   </div>
-  
-  <div className="flex items-center gap-2">
-    <span className="font-medium">{formatPrice(price)} сум</span>
-    <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-  </div>
+))}
+
+## 7. Анимация для модальных окон
+
+В Modal.tsx:
+
+// Backdrop
+<div className="fixed inset-0 bg-black/50 animate-fadeIn" onClick={onClose} />
+
+// Modal content
+<div className="fixed inset-x-4 top-1/2 -translate-y-1/2 bg-white rounded-lg p-6 animate-scaleIn">
+  {children}
 </div>
 
-## 2. Кнопки — hover и active эффекты
+## 8. Анимация для Toast уведомлений
 
-В Button.tsx или везде где используются кнопки:
+В Toast.tsx:
 
-// Primary button
-className="bg-primary-600 text-white px-4 py-3 rounded-lg font-medium
-  transition-all duration-150
-  hover:bg-primary-700
-  active:scale-[0.98] active:bg-primary-800"
+<div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg p-4 animate-slideIn">
+  {message}
+</div>
 
-// Secondary button  
-className="bg-gray-100 text-gray-700 px-4 py-3 rounded-lg font-medium
-  transition-all duration-150
-  hover:bg-gray-200
-  active:scale-[0.98] active:bg-gray-300"
+## 9. Анимация для Wizard шагов
 
-// Danger button (удалить)
-className="bg-red-600 text-white px-4 py-3 rounded-lg font-medium
-  transition-all duration-150
-  hover:bg-red-700
-  active:scale-[0.98] active:bg-red-800"
+В WizardLayout.tsx — анимация при смене шагов:
 
-## 3. Input и Select — focus и active эффекты
+<div key={currentStep} className="animate-fadeIn">
+  {renderStep()}
+</div>
 
-В Input.tsx:
+## 10. Плавный переход для кнопки загрузки
 
-className="w-full px-4 py-3 border border-gray-300 rounded-lg
-  transition-all duration-150
-  hover:border-gray-400
-  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-  active:ring-2 active:ring-primary-500"
+В Button.tsx добавь состояние loading:
 
-В Select.tsx:
+interface ButtonProps {
+  isLoading?: boolean;
+  children: ReactNode;
+  // ...
+}
 
-className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white
-  transition-all duration-150
-  hover:border-gray-400
-  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-  active:ring-2 active:ring-primary-500"
-
-## 4. Нижняя навигация (BottomNav) — active эффекты
-
-В BottomNav.tsx для каждого пункта меню:
-
-<Link 
-  to="/orders"
-  className={`flex flex-col items-center py-2 px-4 transition-all duration-150
-    ${isActive 
-      ? 'text-primary-600' 
-      : 'text-gray-500 hover:text-gray-700 active:scale-[0.95] active:text-gray-800'
-    }`}
->
-  <ClipboardDocumentListIcon className="w-6 h-6" />
-  <span className="text-xs mt-1">Заказы</span>
-</Link>
-
-## 5. Кнопка "Назад" — hover и active
-
-В PageHeader.tsx или где используется кнопка назад:
-
-<button 
-  onClick={() => navigate(-1)}
-  className="p-2 rounded-full transition-all duration-150
-    hover:bg-gray-100
-    active:scale-[0.95] active:bg-gray-200"
->
-  <ArrowLeftIcon className="w-6 h-6" />
-</button>
-
-## 6. Карточки заказов (OrderCard) — стрелка и эффекты
-
-<Link 
-  to={`/orders/${order.id}`}
-  className="block p-4 bg-white rounded-lg shadow-sm
-    transition-all duration-150
-    hover:bg-gray-50 hover:shadow-md
-    active:scale-[0.98] active:bg-gray-100"
->
-  <div className="flex items-center justify-between">
-    <div className="flex-1">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-500">#{order.id}</span>
-        <Badge status={order.status}>{order.statusName}</Badge>
-      </div>
-      <h3 className="font-medium mt-1">{order.clientName}</h3>
-      <p className="text-sm text-gray-500">{order.clientAddress}</p>
-      <p className="text-sm text-gray-500">{formatDate(order.visitDate)}</p>
-    </div>
-    <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-  </div>
-</Link>
-
-## 7. Элементы выбора в Wizard (тип жалюзи, материал, цвет и т.д.)
-
-Если это карточки/кнопки выбора:
-
-<button
-  onClick={() => selectOption(option.id)}
-  className={`w-full p-4 rounded-lg border-2 text-left
-    transition-all duration-150
-    ${isSelected 
-      ? 'border-primary-600 bg-primary-50' 
-      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98] active:bg-gray-100'
-    }`}
->
-  {option.name}
-</button>
-
-## 8. Checkbox и его label
-
-<label className="flex items-center gap-3 p-3 rounded-lg cursor-pointer
-  transition-all duration-150
-  hover:bg-gray-50
-  active:bg-gray-100">
-  <input 
-    type="checkbox" 
-    className="w-5 h-5 rounded border-gray-300 text-primary-600 
-      focus:ring-primary-500 transition-all duration-150"
-  />
-  <span>Монтаж (+50 000 сум)</span>
-</label>
-
-## Общие принципы:
-
-1. Все интерактивные элементы: `transition-all duration-150`
-2. Hover: изменение фона или border
-3. Active: `scale-[0.98]` или `scale-[0.95]` + затемнение фона
-4. Нажимные карточки: добавить ChevronRightIcon справа
-5. Информационные карточки: оставить без стрелки и без cursor-pointer
+export const Button = ({ isLoading, children, ...props }: ButtonProps) => {
+  return (
+    <button 
+      disabled={isLoading}
+      className="... disabled:opacity-70"
+      {...props}
+    >
+      {isLoading ? (
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          <span>Загрузка...</span>
+        </div>
+      ) : children}
+    </button>
+  );
+};

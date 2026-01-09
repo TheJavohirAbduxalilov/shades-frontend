@@ -15,8 +15,14 @@ const OrderList = ({ orders }: OrderListProps) => {
 
   return (
     <div className="space-y-3">
-      {orders.map((order) => (
-        <OrderCard key={order.id} order={order} />
+      {orders.map((order, index) => (
+        <div
+          key={order.id}
+          className="animate-slideUp"
+          style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+        >
+          <OrderCard order={order} />
+        </div>
       ))}
     </div>
   );

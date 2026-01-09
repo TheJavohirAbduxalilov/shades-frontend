@@ -42,7 +42,7 @@ const ToastViewport = () => {
   const remove = useToastStore((state) => state.remove);
 
   return (
-    <div className="pointer-events-none fixed left-1/2 top-4 z-50 w-full max-w-sm -translate-x-1/2 px-4">
+    <div className="pointer-events-none fixed top-4 right-4 z-50 w-[calc(100%-2rem)] max-w-sm">
       <div className="flex flex-col gap-3">
         {toasts.map((toastItem) => (
           <ToastMessage key={toastItem.id} toast={toastItem} onClose={() => remove(toastItem.id)} />
@@ -67,7 +67,7 @@ const ToastMessage = ({ toast, onClose }: { toast: ToastItem; onClose: () => voi
   return (
     <div
       className={[
-        'pointer-events-auto flex items-start justify-between gap-3 rounded-xl border px-4 py-3 text-sm shadow-lg',
+        'pointer-events-auto flex items-start justify-between gap-3 rounded-xl border px-4 py-3 text-sm shadow-lg animate-slideIn',
         tone[toast.type],
       ]
         .filter(Boolean)

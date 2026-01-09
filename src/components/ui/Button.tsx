@@ -19,7 +19,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const base =
-    'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 min-h-[48px] active:scale-[0.98]';
+    'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-70 min-h-[48px] active:scale-[0.98]';
   const sizes = {
     sm: 'px-3 py-2 text-sm min-h-[40px]',
     md: 'px-4 py-3 text-sm',

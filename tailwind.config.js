@@ -19,17 +19,27 @@ module.exports = {
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(6px)' },
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideIn: {
-          '0%': { opacity: '0', transform: 'translateX(12px)' },
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },
       animation: {
-        'fade-in': 'fadeIn 200ms ease-out',
-        'slide-in': 'slideIn 200ms ease-out',
+        fadeIn: 'fadeIn 0.3s ease-out',
+        slideUp: 'slideUp 0.3s ease-out',
+        slideIn: 'slideIn 0.3s ease-out',
+        scaleIn: 'scaleIn 0.2s ease-out',
       },
     },
   },
