@@ -8,46 +8,55 @@ import Card from '../ui/Card';
 interface WindowCardProps {
   orderId: string;
   window: Window;
+  clickable?: boolean;
 }
 
-const WindowCard = ({ orderId, window }: WindowCardProps) => {
+const WindowCard = ({ orderId, window, clickable = true }: WindowCardProps) => {
   const { t } = useTranslation();
   const shade = window.shade;
   const price = shade ? shade.calculatedPrice ?? shade.totalPrice : null;
 
-  return (
-    <Link to={'/orders/' + orderId + '/windows/' + window.id} className="block">
-      <Card className="cursor-pointer transition-all duration-150 hover:bg-slate-50 active:scale-[0.98] active:bg-slate-100">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <h3 className="text-base font-semibold text-slate-900">{window.name}</h3>
-            {shade ? (
-              <div className="mt-1 space-y-1 text-sm text-slate-500">
-                <p>{shade.shadeTypeName}</p>
-                <p>
-                  {shade.width} x {shade.height} мм
-                </p>
-              </div>
-            ) : (
-              <p className="mt-1 text-sm text-slate-500">{t('common.loading')}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-2 text-right">
-            {shade ? (
-              typeof price === 'number' ? (
-                <span className="text-sm font-semibold text-slate-900">
-                  {formatPrice(price)} {t('price.currency')}
-                </span>
-              ) : (
-                <span className="text-xs text-slate-500">{t('price.notCalculated')}</span>
-              )
-            ) : null}
-            <ChevronRightIcon className="h-5 w-5 text-slate-400" />
-          </div>
+  const content = (
+    <Card className={clickable ? 'cursor-pointer transition-all duration-150 hover:bg-slate-50 active:scale-[0.98] active:bg-slate-100' : ''}>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex-1">
+          <h3 className="text-base font-semibold text-slate-900">{window.name}</h3>
+          {shade ? (
+            <div className="mt-1 space-y-1 text-sm text-slate-500">
+              <p>{shade.shadeTypeName}</p>
+              <p>
+                {shade.width} x {shade.height} мм
+              </p>
+            </div>
+          ) : (
+            <p className="mt-1 text-sm text-slate-500">{t('common.loading')}</p>
+          )}
         </div>
-      </Card>
-    </Link>
+        <div className="flex items-center gap-2 text-right">
+          {shade ? (
+            typeof price === 'number' ? (
+              <span className="text-sm font-semibold text-slate-900">
+                {formatPrice(price)} {t('price.currency')}
+              </span>
+            ) : (
+              <span className="text-xs text-slate-500">{t('price.notCalculated')}</span>
+            )
+          ) : null}
+          {clickable ? <ChevronRightIcon className="h-5 w-5 text-slate-400" /> : null}
+        </div>
+      </div>
+    </Card>
   );
+
+  if (clickable) {
+    return (
+      <Link to={'/orders/' + orderId + '/windows/' + window.id} className="block">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 export default WindowCard;

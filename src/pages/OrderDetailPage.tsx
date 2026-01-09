@@ -28,6 +28,7 @@ const OrderDetailPage = () => {
 
   const windows = useMemo(() => order?.windows || [], [order]);
   const isCompleted = order?.status === 'completed';
+  const isMeasured = order?.status === 'measured';
   const isInstallerForbidden =
     isInstaller &&
     user?.id &&
@@ -176,9 +177,11 @@ const OrderDetailPage = () => {
             <Button variant="secondary" fullWidth onClick={() => navigate(`/orders/${order.id}/edit`)}>
               {t('common.edit')}
             </Button>
-            <Button fullWidth onClick={() => setShowCompleteModal(true)}>
-              {t('orders.complete')}
-            </Button>
+            {isMeasured ? (
+              <Button fullWidth onClick={() => setShowCompleteModal(true)}>
+                {t('orders.complete')}
+              </Button>
+            ) : null}
             <Button variant="danger" fullWidth onClick={() => setShowDeleteModal(true)}>
               {t('common.delete')}
             </Button>
@@ -192,7 +195,7 @@ const OrderDetailPage = () => {
             </Button>
           ) : null}
         </div>
-        <WindowList orderId={orderId} windows={windows} />
+        <WindowList orderId={orderId} windows={windows} clickable={isInstaller} />
         <Button variant="secondary" onClick={() => navigate('/orders/' + orderId + '/summary')}>
           {t('order.summary')}
         </Button>

@@ -5,9 +5,10 @@ import WindowCard from './WindowCard';
 interface WindowListProps {
   orderId: string;
   windows: Window[];
+  clickable?: boolean;
 }
 
-const WindowList = ({ orderId, windows }: WindowListProps) => {
+const WindowList = ({ orderId, windows, clickable = true }: WindowListProps) => {
   const { t } = useTranslation();
 
   if (!windows.length) {
@@ -22,7 +23,7 @@ const WindowList = ({ orderId, windows }: WindowListProps) => {
           className="animate-slideUp"
           style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
         >
-          <WindowCard orderId={orderId} window={windowItem} />
+          <WindowCard orderId={orderId} window={windowItem} clickable={clickable} />
         </div>
       ))}
     </div>

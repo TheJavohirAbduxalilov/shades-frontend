@@ -24,14 +24,20 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Navigate to="/orders" replace />} />
           <Route path="/orders" element={<OrdersPage />} />
-          <Route path="/orders/new" element={<OrderFormPage />} />
           <Route path="/orders/:orderId" element={<OrderDetailPage />} />
-          <Route path="/orders/:orderId/edit" element={<OrderFormPage />} />
-          <Route path="/orders/:orderId/windows/new" element={<WindowWizardPage />} />
           <Route path="/orders/:orderId/windows/:windowId" element={<WindowViewPage />} />
-          <Route path="/orders/:orderId/windows/:windowId/edit" element={<WindowWizardPage />} />
           <Route path="/orders/:orderId/summary" element={<SummaryPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+          <Route path="/orders/new" element={<OrderFormPage />} />
+          <Route path="/orders/:orderId/edit" element={<OrderFormPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['installer']} />}>
+          <Route path="/orders/:orderId/windows/new" element={<WindowWizardPage />} />
+          <Route path="/orders/:orderId/windows/:windowId/edit" element={<WindowWizardPage />} />
         </Route>
       </Routes>
       <BottomNav />
