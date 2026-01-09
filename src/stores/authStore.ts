@@ -24,7 +24,15 @@ interface AuthState {
 const getStoredUser = (): User | null => {
   try {
     const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    // Validate that user has required role field
+    if (!parsed.role || !['admin', 'installer'].includes(parsed.role)) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }

@@ -17,6 +17,9 @@ const OrdersPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAdmin, isInstaller, user } = useAuthStore();
+
+  // DEBUG: Remove after fixing role issue
+  console.log('User role debug:', { user, isAdmin, isInstaller, role: user?.role });
   const [filters, setFilters] = useState<OrdersFilters>({});
   const effectiveFilters = useMemo(() => {
     if (!isAdmin && isInstaller && user?.id) {
