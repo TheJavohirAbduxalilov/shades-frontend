@@ -11,6 +11,7 @@ import { toast } from '../components/ui/Toast';
 import { useOrder } from '../hooks/useOrders';
 import { useDeleteShade } from '../hooks/useShades';
 import { useDeleteWindow } from '../hooks/useWindows';
+import { useAuthStore } from '../stores/authStore';
 
 const WindowViewPage = () => {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ const WindowViewPage = () => {
   const orderId = params.orderId || '';
   const windowId = params.windowId || '';
   const { data: order, isLoading, isError } = useOrder(orderId);
+  const { isInstaller } = useAuthStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteWindow = useDeleteWindow();
   const deleteShade = useDeleteShade();
@@ -67,14 +69,16 @@ const WindowViewPage = () => {
       <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
         <PageHeader title={windowItem.name} onBack={() => navigate('/orders/' + orderId)} />
         <WindowDetails window={windowItem} />
-        <div className="grid gap-3">
-          <Button onClick={() => navigate('/orders/' + orderId + '/windows/' + windowId + '/edit')}>
-            {t('common.edit')}
-          </Button>
-          <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
-            {t('common.delete')}
-          </Button>
-        </div>
+        {isInstaller ? (
+          <div className="grid gap-3">
+            <Button onClick={() => navigate('/orders/' + orderId + '/windows/' + windowId + '/edit')}>
+              {t('common.edit')}
+            </Button>
+            <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+              {t('common.delete')}
+            </Button>
+          </div>
+        ) : null}
         <Modal
           isOpen={showDeleteModal}
           title={t('delete.windowTitle')}

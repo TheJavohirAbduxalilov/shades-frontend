@@ -24,6 +24,7 @@ import { useCreateShade, useUpdateShade } from '../hooks/useShades';
 import { useCreateWindow, useUpdateWindow } from '../hooks/useWindows';
 import useDraftStore from '../stores/draftStore';
 import useWizardStore from '../stores/wizardStore';
+import { useAuthStore } from '../stores/authStore';
 import { Catalog, Shade, Window } from '../types';
 
 interface WizardErrors {
@@ -79,6 +80,7 @@ const WindowWizardPage = () => {
 
   const { data: order, isLoading: orderLoading, isError: orderError } = useOrder(orderId);
   const { data: catalog, isLoading: catalogLoading, isError: catalogError } = useCatalog();
+  const { isAdmin } = useAuthStore();
 
   const wizard = useWizardStore();
   const loadDraft = useDraftStore((state) => state.loadDraft);
@@ -98,6 +100,13 @@ const WindowWizardPage = () => {
       console.log('Checking draft with key:', draftKey);
     }
   }, [draftKey]);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      return;
+    }
+    navigate(orderId ? '/orders/' + orderId : '/orders');
+  }, [isAdmin, navigate, orderId]);
 
   const createWindow = useCreateWindow();
   const updateWindow = useUpdateWindow();
@@ -400,6 +409,14 @@ const WindowWizardPage = () => {
     return (
       <PageTransition>
         <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>
+      </PageTransition>
+    );
+  }
+
+  if (isAdmin) {
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.unknown')}</p>
       </PageTransition>
     );
   }

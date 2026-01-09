@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
@@ -16,9 +16,15 @@ import { useAuthStore } from '../stores/authStore';
 const OrdersPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAdmin } = useAuthStore();
+  const { isAdmin, isInstaller, user } = useAuthStore();
   const [filters, setFilters] = useState<OrdersFilters>({});
-  const { data = [], isLoading, isError } = useOrders(filters);
+  const effectiveFilters = useMemo(() => {
+    if (!isAdmin && isInstaller && user?.id) {
+      return { ...filters, assignedUserId: String(user.id) };
+    }
+    return filters;
+  }, [filters, isAdmin, isInstaller, user?.id]);
+  const { data = [], isLoading, isError } = useOrders(effectiveFilters);
   const { data: installers = [] } = useQuery({
     queryKey: ['installers'],
     queryFn: getInstallers,

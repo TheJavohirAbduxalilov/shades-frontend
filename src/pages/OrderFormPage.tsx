@@ -38,7 +38,7 @@ const OrderFormPage = () => {
   const { data: order, isLoading, isError } = useQuery({
     queryKey: ['order', orderId],
     queryFn: () => getOrderById(Number(orderId)),
-    enabled: isEditMode,
+    enabled: isEditMode && isAdmin,
   });
 
   const { data: installers = [] } = useQuery({
@@ -46,6 +46,12 @@ const OrderFormPage = () => {
     queryFn: getInstallers,
     enabled: isAdmin,
   });
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/orders');
+    }
+  }, [isAdmin, navigate]);
 
   useEffect(() => {
     if (!order) {
@@ -123,6 +129,14 @@ const OrderFormPage = () => {
     return (
       <PageTransition>
         <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.network')}</p>
+      </PageTransition>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.unknown')}</p>
       </PageTransition>
     );
   }

@@ -3,7 +3,7 @@ import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { completeOrder, deleteOrder } from '../api/orders.api';
+import { completeOrder, deleteOrder, updateOrder } from '../api/orders.api';
 import ClientInfo from '../components/orders/ClientInfo';
 import WindowList from '../components/windows/WindowList';
 import PageHeader from '../components/layout/PageHeader';
@@ -11,6 +11,7 @@ import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import PageTransition from '../components/ui/PageTransition';
 import { CardSkeleton, WindowCardSkeleton } from '../components/ui/Skeleton';
+import { toast } from '../components/ui/Toast';
 import { useOrder } from '../hooks/useOrders';
 import { useAuthStore } from '../stores/authStore';
 
@@ -20,13 +21,21 @@ const OrderDetailPage = () => {
   const params = useParams();
   const orderId = params.orderId || '';
   const { data: order, isLoading, isError, refetch } = useOrder(orderId);
-  const { isAdmin } = useAuthStore();
+  const { isAdmin, isInstaller, user } = useAuthStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const windows = useMemo(() => order?.windows || [], [order]);
   const isCompleted = order?.status === 'completed';
+  const isInstallerForbidden =
+    isInstaller &&
+    user?.id &&
+    order?.assignedUserId != null &&
+    order.assignedUserId !== user.id;
+  const canMarkInProgress = isInstaller && order?.status === 'new';
+  const canMarkMeasured = isInstaller && order?.status === 'in_progress';
+  const canManageWindows = isInstaller;
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -51,6 +60,22 @@ const OrderDetailPage = () => {
     onSuccess: () => {
       setShowCompleteModal(false);
       refetch();
+    },
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: async (nextStatus: 'in_progress' | 'measured') => {
+      if (!order) {
+        throw new Error('Order not loaded');
+      }
+      return updateOrder(order.id, { status: nextStatus });
+    },
+    onSuccess: () => {
+      toast.success(t('common.saved'));
+      refetch();
+    },
+    onError: () => {
+      toast.error(t('errors.network'));
     },
   });
 
@@ -87,6 +112,14 @@ const OrderDetailPage = () => {
     );
   }
 
+  if (isInstallerForbidden) {
+    return (
+      <PageTransition>
+        <p className="mx-auto max-w-xl px-4 pb-28 pt-6 text-sm text-error">{t('errors.unknown')}</p>
+      </PageTransition>
+    );
+  }
+
   return (
     <PageTransition>
       <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
@@ -116,6 +149,28 @@ const OrderDetailPage = () => {
             </div>
           </div>
         ) : null}
+        {isInstaller && (canMarkInProgress || canMarkMeasured) ? (
+          <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm">
+            {canMarkInProgress ? (
+              <Button
+                fullWidth
+                onClick={() => statusMutation.mutate('in_progress')}
+                isLoading={statusMutation.isPending}
+              >
+                {t('status.in_progress')}
+              </Button>
+            ) : null}
+            {canMarkMeasured ? (
+              <Button
+                fullWidth
+                onClick={() => statusMutation.mutate('measured')}
+                isLoading={statusMutation.isPending}
+              >
+                {t('status.measured')}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
         {isAdmin && !isCompleted ? (
           <div className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm">
             <Button variant="secondary" fullWidth onClick={() => navigate(`/orders/${order.id}/edit`)}>
@@ -131,9 +186,11 @@ const OrderDetailPage = () => {
         ) : null}
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-900">{t('order.windows')}</h2>
-          <Button size="sm" onClick={() => navigate('/orders/' + orderId + '/windows/new')}>
-            {t('order.addWindow')}
-          </Button>
+          {canManageWindows ? (
+            <Button size="sm" onClick={() => navigate('/orders/' + orderId + '/windows/new')}>
+              {t('order.addWindow')}
+            </Button>
+          ) : null}
         </div>
         <WindowList orderId={orderId} windows={windows} />
         <Button variant="secondary" onClick={() => navigate('/orders/' + orderId + '/summary')}>
