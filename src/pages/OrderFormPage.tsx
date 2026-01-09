@@ -153,8 +153,8 @@ const OrderFormPage = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1">
-          <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col">
+          <div className="mx-auto w-full max-w-2xl flex-1 space-y-4 px-4 py-6">
             <Input
               label={t('orders.clientName')}
               value={formData.clientName}
@@ -206,19 +206,19 @@ const OrderFormPage = () => {
               </Select>
             ) : null}
           </div>
-        </form>
 
-        <div className="border-t border-slate-200 bg-white">
-          <div className="mx-auto w-full max-w-2xl px-4 py-4">
-            <Button
-              type="submit"
-              fullWidth
-              isLoading={createMutation.isPending || updateMutation.isPending}
-            >
-              {isEditMode ? t('common.save') : t('orders.create')}
-            </Button>
+          <div className="border-t border-slate-200 bg-white">
+            <div className="mx-auto w-full max-w-2xl px-4 py-4">
+              <Button
+                type="submit"
+                fullWidth
+                isLoading={createMutation.isPending || updateMutation.isPending}
+              >
+                {isEditMode ? t('common.save') : t('orders.create')}
+              </Button>
+            </div>
           </div>
-        </div>
+        </form>
 
         <Modal
           isOpen={showSuccessModal}
