@@ -11,12 +11,12 @@ interface PageHeaderProps {
 const PageHeader = ({ title, subtitle, onBack, actions }: PageHeaderProps) => {
   return (
     <div className="flex items-start justify-between gap-4">
-      <div className="flex items-start gap-3">
+      <div className="flex items-center gap-3">
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="mt-1 rounded-full border border-slate-200 p-2 text-slate-500 transition-all duration-150 hover:bg-slate-100 active:scale-[0.95] active:bg-slate-200"
+            className="rounded-full border border-slate-200 p-2 text-slate-500 transition-all duration-150 hover:bg-slate-100 active:scale-[0.95] active:bg-slate-200"
           >
             <ArrowLeftIcon className="h-5 w-5" />
           </button>

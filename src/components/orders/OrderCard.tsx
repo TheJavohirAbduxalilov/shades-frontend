@@ -16,7 +16,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
   return (
     <Link to={'/orders/' + order.id} className="block">
       <Card className="cursor-pointer transition-all duration-150 hover:bg-slate-50 active:scale-[0.98] active:bg-slate-100">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">#{order.id}</span>
@@ -28,7 +28,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
               {t('orders.visitDate')}: {formatDate(order.visitDate, i18n.language)}
             </p>
           </div>
-          <ChevronRightIcon className="h-5 w-5 text-slate-400" />
+          <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-slate-400" />
         </div>
       </Card>
     </Link>
