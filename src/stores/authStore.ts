@@ -16,40 +16,46 @@ export interface AuthState {
 
 const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      isAdmin: false,
-      isInstaller: false,
-      login: (user, token) => {
-        set({
-          user,
-          token,
-          isAuthenticated: true,
-          isAdmin: user.role === 'admin',
-          isInstaller: user.role === 'installer',
-        });
-        if (user?.preferredLanguageCode) {
-          i18n.changeLanguage(user.preferredLanguageCode);
-        }
-      },
-      logout: () =>
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isAdmin: false,
-          isInstaller: false,
-        }),
-      setLanguage: (lang) => {
-        const currentUser = get().user;
-        if (currentUser) {
-          set({ user: { ...currentUser, preferredLanguageCode: lang } });
-        }
-        i18n.changeLanguage(lang);
-      },
-    }),
+    (set, get) => {
+      const storedToken = localStorage.getItem('token');
+      return {
+        user: null,
+        token: storedToken,
+        isAuthenticated: Boolean(storedToken),
+        isAdmin: false,
+        isInstaller: false,
+        login: (user, token) => {
+          localStorage.setItem('token', token);
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+            isAdmin: user.role === 'admin',
+            isInstaller: user.role === 'installer',
+          });
+          if (user?.preferredLanguageCode) {
+            i18n.changeLanguage(user.preferredLanguageCode);
+          }
+        },
+        logout: () => {
+          localStorage.removeItem('token');
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            isInstaller: false,
+          });
+        },
+        setLanguage: (lang) => {
+          const currentUser = get().user;
+          if (currentUser) {
+            set({ user: { ...currentUser, preferredLanguageCode: lang } });
+          }
+          i18n.changeLanguage(lang);
+        },
+      };
+    },
     {
       name: 'auth-store',
       storage: createJSONStorage(() => localStorage),
