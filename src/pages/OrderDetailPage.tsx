@@ -7,6 +7,7 @@ import { completeOrder, deleteOrder, updateOrder } from '../api/orders.api';
 import ClientInfo from '../components/orders/ClientInfo';
 import WindowList from '../components/windows/WindowList';
 import PageHeader from '../components/layout/PageHeader';
+import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import PageTransition from '../components/ui/PageTransition';
@@ -92,7 +93,7 @@ const OrderDetailPage = () => {
     return (
       <PageTransition>
         <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
-          <PageHeader title={t('order.clientInfo')} onBack={() => navigate('/orders')} />
+          <PageHeader title={t('order.orderInfo')} onBack={() => navigate('/orders')} />
           <CardSkeleton />
           <div className="space-y-3">
             <WindowCardSkeleton />
@@ -123,7 +124,11 @@ const OrderDetailPage = () => {
   return (
     <PageTransition>
       <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 pb-28 pt-6">
-        <PageHeader title={t('order.clientInfo')} onBack={() => navigate('/orders')} />
+        <PageHeader
+          title={t('order.orderInfo')}
+          onBack={() => navigate('/orders')}
+          actions={<Badge tone={order.status}>{t('status.' + order.status)}</Badge>}
+        />
         <ClientInfo order={order} />
         {isAdmin ? (
           <div className="rounded-2xl bg-white p-4 shadow-sm">

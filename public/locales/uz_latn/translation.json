@@ -60,6 +60,7 @@
     "contactUs": "Biz bilan bog'lanish"
   },
   "order": {
+    "orderInfo": "Buyurtma ma'lumotlari",
     "clientInfo": "Mijoz ma'lumotlari",
     "phone": "Telefon",
     "address": "Manzil",
